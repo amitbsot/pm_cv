@@ -1,0 +1,42 @@
+body {
+  background-color: #EAF6F6;
+  inline: center;
+  font: Reforma;
+
+
+}
+h1 {
+  color: #005086;
+}
+
+h2{
+  color: #005086;
+}
+
+h3{
+  color: #1f4068;
+}
+
+makojob{
+  color: #1f4068;
+}
+
+hr {
+
+  border-style: none ;
+  border-top-style: dotted ;
+  border-top-width: medium;
+  width: 50%;
+}
+
+.Bodycontent{
+  width: 960px;
+  margin: 0 auto;
+    text-align: left;
+    background: #fff;
+    padding: 0 17px 0 17px;
+}
+
+tophead{
+  display: inline;
+}
