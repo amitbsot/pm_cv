@@ -35,9 +35,8 @@ hr {
     text-align: left;
     background: #fff;
     padding: 0 17px 0 17px;
-  flex-direction: row-reverse;
 }
 
 tophead{
-  display: inline;
+flex-direction: row-reverse;
 }
