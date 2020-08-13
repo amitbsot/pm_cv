@@ -1,0 +1,101 @@
+body{
+  background-color: #1b262c;
+}
+.Bodycontent{
+  width: 56%;
+  margin: -140px auto;
+    text-align: left;
+    background: #fff;
+    padding: 0 17px 0 17px;
+    background-color: #EAF6F6;
+    float: right;
+  }
+
+#header_container {
+  background-color: blue;
+  box-sizing: border-box;
+  height: inherit
+  padding: 30px 80px;
+  margin: 0 auto;
+  position: fixed;
+  width: 100%;
+  z-index: 20;
+  opacity: 0;
+  float: left;
+
+  }
+  .moved {
+  transform: perspective(500px) translate3d(10px, 0, 100px);
+}
+
+h1{
+  font-size: 40PX ;
+  color: #ebecf1;
+  display: grid;
+ }
+
+.about{
+  color: #ebecf1;
+  display: inline;
+}
+
+.mailto:link{
+  color: #ebecf1;
+  background-color: transparent;
+  text-decoration: none;
+}
+.mailto:visited{
+  color: #d9adad;
+  background-color: transparent;
+  text-decoration: none;
+}
+.mailto:hover{
+  color: #d9adad;
+  font-weight: bolder;
+  text-decoration: underline;
+}
+.mailto:active{
+  color: blue;
+  background-color: transparent;
+  text-decoration: underline;
+
+}
+.social:link{
+  color: #ebecf1;
+  background-color: transparent;
+  text-decoration: none;
+}
+.social:visited{
+  color: #d9adad;
+  background-color: transparent;
+  text-decoration: none;
+}
+.social:hover{
+  color: #d9adad;
+  font-weight: bolder;
+  text-decoration: underline;
+}
+.social:active{
+  color: blue;
+  background-color: transparent;
+  text-decoration: underline;
+
+}
+.insta:link{
+  color: #ebecf1;
+  background-color: transparent;
+  text-decoration: none;
+}
+.insta:visited{
+  color: #ebecf1;
+  background-color: transparent;
+  text-decoration: none;
+}
+hr {
+
+  border-style: none ;
+  border-top-style: dotted ;
+  border-top-width: medium;
+  width: 10%;
+  width: center;
+}
