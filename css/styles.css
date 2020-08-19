@@ -1,22 +1,80 @@
 body{
   background-color: #233752;
   display: block;
-  margin: 0px;
   position: relative;
-  font-family: "comic sans MS", "cursive", sans-serif;
+  margin: 0px;
+  font-family: 'montserrat', sans-serif;
   font-size: 1.2rem;
+  color: #40514E;
+
 }
-#main{
-  width: 100%;
+h1{
+  font-size: 40PX ;
+  color: #ebecf1;
+  display: grid;
+
+ }
+h2{
+  text-align: center;
+  line-height: 3;
+  margin-top: 15%;
+  font-size: 2.65rem;
+
+}
+h3{
+  line-height: 2;
+}
+hr {
+
+  border-style: none ;
+  border-top-style: dotted ;
+  border-top-width: medium;
+  width: 10%;
+  margin: 10% 50%;
+}
+
+ul{
+  padding: 12px 0;
+  display:block;
+}
+li{
   display: inline-block;
 }
-.container{
+li::before{
+  content: '/';
+  padding: 0 12px 0 9px;
+}
+
+#bodycontent_summary{
+    text-align: left;
+    width: 90%;
+    margin: auto;
+}
+  /*.moved {
+  transform: perspective(500px) translate3d(10px, 0, 100px);}*/
+#education{
+  text-align: left;
+  width: 80%;
+  margin: auto;
+}
+#profession{
+  text-align: left;
+  width: 80%;
+  margin: auto;
+}
+
+#military{
+  text-align: left;
+  width: 80%;
+  margin: auto;
+}
+
+.top_container{
   position: relative;
   width: calc(100%-100vw-100%);
   height: 110vh;
   background-image: linear-gradient(153deg, #188991, #167EA5);
   /*background-image: linear-gradient(268deg,  #18898C, #167E82);*/
-
 }
 
 .hey{
@@ -27,6 +85,8 @@ body{
     text-align: center;
     font-size: 3rem;
     color: #e4e3e3;
+    font-family: "comic sans MS", "cursive", sans-serif;
+
 }
 .so{
     position: absolute;
@@ -38,6 +98,8 @@ body{
     font-size: 3rem;
     color: #e4e3e3;
     z-index: 3;
+    font-family: "comic sans MS", "cursive", sans-serif;
+
 }
 .goku{
   display: block;
@@ -46,63 +108,38 @@ body{
   height: 100vh;
   bottom: 0px;
 }
-#header_container {
-  width: 40%;
-  margin-top: 30%;
-  position: sticky;
-  display: block;
-  opacity: 1;
-  float: left;
-  text-align: center;
-  font-family: serif;
-  font-size: 1.5rem;
-  color: #ebecf1;
-  line-height: 2;
-
-  }
-
-#bodycontent{
+.dragon_radar{
+  bottom: 0;
   position: absolute;
-  width: 40%;
-  height: 100%;
-  text-align: left;
-  padding: 0 8% 0 8%;
-  background-color: #EAF6F6;
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+.middle_container{
+  display: block;
+  position: relative;
+
+}
+.middle_left_container {
+  position: absolute;
+  display: inline-block;
+  width: 50%;
+  text-align: center;
   font-family: serif;
-  right: 0px;
-  line-height: 1.5;
+  font-size: 2rem;
+  color: #ebecf1;
+  line-height: 2;
 
   }
-  .bodycontent_summary{
-    text-align: left;
+
+.personal_info{
+  top: 30%;
+  display: block;
 }
-  /*.moved {
-  transform: perspective(500px) translate3d(10px, 0, 100px);}*/
-
-
-h1{
-  font-size: 40PX ;
-  color: #ebecf1;
-  display: grid;
-
- }
-h2{
-  font-family: 'montserrat', sans-serif;
-  text-align: center;
-  line-height: 3;
-  margin-top: 20%;
-  font-size: 2.65rem;
-
-}
-h3{
-  font-family: 'montserrat', sans-serif;
-  line-height: 2;
-}
-.about{
+.contect{
   color: #ebecf1;
   display: inline;
 }
-
 .mailto:link{
   color: #ebecf1;
   background-color: transparent;
@@ -146,21 +183,53 @@ h3{
   text-decoration: underline;
 
 }
-.insta:link{
-  color: transparent;
-  background-color: transparent;
-  text-decoration: none;
-}
-.insta:visited{
-  color: transparent;
-  background-color: transparent;
-  text-decoration: none;
-}
-hr {
+.middle_right_container{
+  /*position: absolute; */
+  display: inline-block;
+  margin-left: 50%;
+  top: 0;
+  /* width: 50%; */
+  /* text-align: left; */
+  background-color: #EAF6F6;
+  font-family: serif;
+  /* right: 0px; */
+  line-height: 1.5;
+  font-family: 'montserrat', sans-serif;
 
-  border-style: none ;
-  border-top-style: dotted ;
-  border-top-width: medium;
-  width: 10%;
-  width: center;
+  }
+.bottom_container_footer{
+display: block;
+width: 100%;
+height: auto;
+background-color: #cbeaed;
+text-align: center;
+}
+.winner{
+right: 0;
+left: 0;
+position: absolute;
+margin: 2% auto;
+display: block;
+width: 50%;
+font-family: 'winnercond_regular', sans-serif;
+
+}
+.goku_wins{
+  height: auto;
+  width: 100%;
+  z-index: 2;
+}
+.footer{
+  display: block;
+  bottom: 0;
+  padding: 50px 0 20px 0;
+  margin: 0;
+}
+@font-face {
+    font-family: 'winnercond_regular';
+    src: url('winner-condregular-webfont.woff2') format('woff2'),
+         url('winner-condregular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
 }
