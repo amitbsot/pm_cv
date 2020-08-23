@@ -5,8 +5,8 @@ body{
   margin: 0px;
   font-family: 'montserrat', sans-serif;
   font-size: 1.2rem;
-  color: #40514E;
-
+  color: #383838;
+  min-width: 790px;
 }
 h1{
   font-size: 40PX ;
@@ -17,7 +17,6 @@ h1{
 h2{
   text-align: center;
   line-height: 3;
-  margin-top: 15%;
   font-size: 2.65rem;
 
 }
@@ -33,80 +32,68 @@ hr {
   margin: 10% 50%;
 }
 
-ul{
+ul.nav{
   padding: 12px 0;
   display:block;
 }
-li{
+li.nav-nav{
   display: inline-block;
+
 }
-li::before{
+li.nav-nav:not(:first-child):before{
+  left: 0px;
   content: '/';
-  padding: 0 12px 0 9px;
+  padding: 0 12px 0 12px;
+
 }
 
 #bodycontent_summary{
     text-align: left;
-    width: 90%;
-    margin: auto;
+    margin-top: 15%;
 }
   /*.moved {
   transform: perspective(500px) translate3d(10px, 0, 100px);}*/
 #education{
   text-align: left;
-  width: 80%;
-  margin: auto;
+  margin-top: 15%;
 }
 #profession{
   text-align: left;
-  width: 80%;
-  margin: auto;
+  margin-top: 15%;
 }
 
 #military{
   text-align: left;
-  width: 80%;
-  margin: auto;
+  margin-top: 15%;
 }
 
 .top_container{
   position: relative;
   width: calc(100%-100vw-100%);
-  height: 110vh;
-  background-image: linear-gradient(153deg, #188991, #167EA5);
-  /*background-image: linear-gradient(268deg,  #18898C, #167E82);*/
-}
-
-.hey{
-    position: absolute;
-    top: 15%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    font-size: 3rem;
-    color: #e4e3e3;
-    font-family: "comic sans MS", "cursive", sans-serif;
-
-}
-.so{
-    position: absolute;
-    bottom: 5%;
-    left: 50%;
-    margin-bottom: 0px;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    font-size: 3rem;
-    color: #e4e3e3;
-    z-index: 3;
-    font-family: "comic sans MS", "cursive", sans-serif;
-
-}
-.goku{
-  display: block;
-  position: absolute;
-  width: 100%;
   height: 100vh;
-  bottom: 0px;
+  text-align: center;
+  background-color: #537895;
+  background-image: linear-gradient(315deg, #537895 0%, #09203f 74%);
+  z-index: 555;
+}
+.dragonballsuper{
+  font-size: 3rem;
+  color: #e4e3e3;
+  font-family: "comic sans MS", "cursive", sans-serif;
+  min-width: 590px;
+  width: 50%;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  display: block;
+}
+.hey{
+  display: block;
+}
+
+.goku{
+
 }
 .dragon_radar{
   bottom: 0;
@@ -114,17 +101,34 @@ li::before{
   display: block;
   width: 100%;
   text-align: center;
+  color: #ffd700;
+  padding: 36px 0;
+}
+.scouter_nav:link{
+  color: #ffd700;
+  background-color: transparent;
+  text-decoration: none;
+  margin: 0px;
+}
+.scouter_nav:visited{
+  color: #ffd700;
+  background-color: transparent;
+  text-decoration: none;
+}
+.scouter_nav:hover{
+  color: #FFE04D;
+  text-decoration: underline;
 }
 .middle_container{
-  display: block;
   position: relative;
-
+  display: flex;
+  background-image: linear-gradient(315deg, #537895 0%, #09203f 74%);
+  z-index: 1;
+  text-align: center;
 }
 .middle_left_container {
-  position: absolute;
-  display: inline-block;
+  display: flex;
   width: 50%;
-  text-align: center;
   font-family: serif;
   font-size: 2rem;
   color: #ebecf1;
@@ -133,8 +137,11 @@ li::before{
   }
 
 .personal_info{
-  top: 30%;
   display: block;
+  text-align: center;
+  position: sticky;
+  margin: 21% 0 40% 0;
+  width: 100%;
 }
 .contect{
   color: #ebecf1;
@@ -183,53 +190,50 @@ li::before{
   text-decoration: underline;
 
 }
+.progressbar{
+
+}
 .middle_right_container{
-  /*position: absolute; */
-  display: inline-block;
-  margin-left: 50%;
-  top: 0;
-  /* width: 50%; */
-  /* text-align: left; */
+  display: flex;
+  display: block;
+  width: 50%;
   background-color: #EAF6F6;
   font-family: serif;
-  /* right: 0px; */
   line-height: 1.5;
-  font-family: 'montserrat', sans-serif;
-
+  font-family: Proxima Nova Regular,serif;
+  padding: 0 4% 8% 4%;
   }
 .bottom_container_footer{
 display: block;
+position: absolute;
 width: 100%;
-height: auto;
+height: 100vh;
 background-color: #cbeaed;
 text-align: center;
 }
 .winner{
-right: 0;
-left: 0;
-position: absolute;
-margin: 2% auto;
-display: block;
-width: 50%;
-font-family: 'winnercond_regular', sans-serif;
-
+  position: fixed;
+  display: block;
+  width: 100%;
+  left: 0;
+  top: 0;
+  margin-top: 10%;
+  z-index: 0;
 }
 .goku_wins{
-  height: auto;
-  width: 100%;
-  z-index: 2;
+  position: fixed;
+  display: block;
+  width: 50%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 0;
 }
 .footer{
   display: block;
+  position: absolute;
+  width: 100%;
   bottom: 0;
   padding: 50px 0 20px 0;
   margin: 0;
-}
-@font-face {
-    font-family: 'winnercond_regular';
-    src: url('winner-condregular-webfont.woff2') format('woff2'),
-         url('winner-condregular-webfont.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-
 }
