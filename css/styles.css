@@ -1,3 +1,8 @@
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 body{
   background-color: #233752;
   display: block;
@@ -6,7 +11,6 @@ body{
   font-family: 'montserrat', sans-serif;
   font-size: 1.2rem;
   color: #383838;
-  min-width: 790px;
 }
 h1{
   font-size: 40PX ;
@@ -66,7 +70,12 @@ li.nav-nav:not(:first-child):before{
   text-align: left;
   margin-top: 15%;
 }
-
+.dragonworld{
+  position: relative;
+  top: 0;
+  width: 100%;
+  overflow: hidden;
+}
 .top_container{
   position: relative;
   width: calc(100%-100vw-100%);
@@ -76,14 +85,14 @@ li.nav-nav:not(:first-child):before{
   background-image: linear-gradient(315deg, #537895 0%, #09203f 74%);
   z-index: 555;
 }
+
 .dragonballsuper{
   font-size: 3rem;
   color: #e4e3e3;
   font-family: "comic sans MS", "cursive", sans-serif;
-  min-width: 590px;
   width: 50%;
   left: 50%;
-  top: 40%;
+  top: 50%;
   transform: translate(-50%, -50%);
   position: absolute;
   display: block;
@@ -93,7 +102,6 @@ li.nav-nav:not(:first-child):before{
 }
 
 .goku{
-
 }
 .dragon_radar{
   bottom: 0;
@@ -119,29 +127,35 @@ li.nav-nav:not(:first-child):before{
   color: #FFE04D;
   text-decoration: underline;
 }
+.main_container{
+}
 .middle_container{
-  position: relative;
-  display: flex;
   background-image: linear-gradient(315deg, #537895 0%, #09203f 74%);
-  z-index: 1;
+  z-index: 100;
   text-align: center;
+  position:relative;
+  display:flex;
 }
 .middle_left_container {
-  display: flex;
-  width: 50%;
   font-family: serif;
   font-size: 2rem;
   color: #ebecf1;
   line-height: 2;
+  width: 50%;
 
   }
-
+.middle_left_container::after{
+  content: "";
+  clear: both;
+  display: table;
+}
 .personal_info{
   display: block;
   text-align: center;
   position: sticky;
   margin: 21% 0 40% 0;
   width: 100%;
+  padding: 0 5%;
 }
 .contect{
   color: #ebecf1;
@@ -194,22 +208,15 @@ li.nav-nav:not(:first-child):before{
 
 }
 .middle_right_container{
-  display: flex;
-  display: block;
-  width: 50%;
   background-color: #EAF6F6;
   font-family: serif;
   line-height: 1.5;
   font-family: Proxima Nova Regular,serif;
   padding: 0 4% 8% 4%;
+  width: 50%;
   }
 .bottom_container_footer{
-display: block;
-position: absolute;
-width: 100%;
-height: 100vh;
-background-color: #cbeaed;
-text-align: center;
+
 }
 .winner{
   position: fixed;
@@ -228,12 +235,63 @@ text-align: center;
   top: 50%;
   transform: translate(-50%, -50%);
   z-index: 0;
+  overflow: visible;
 }
-.footer{
+footer{
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background-color: #cbeaed;
+  text-align: center;
+  z-index: -1;
+}
+.foot_footer{
   display: block;
   position: absolute;
   width: 100%;
   bottom: 0;
   padding: 50px 0 20px 0;
   margin: 0;
+}
+
+@media only screen and (max-width: 768px) {
+  .top_container{
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    text-align: center;
+    z-index: 555;
+  }
+  .dragonballsuper {
+    width: 100%;
+    left: 0;
+    top: 10%;
+    transform: none;
+
+  }
+  .goku{
+    width: 100%
+  }
+  .middle_container{
+    position:relative;
+    width: 100%;
+    display: block;
+  }
+  .middle_left_container {
+    width: 100%;
+    padding: 8% 5% 10%;
+    display: block;
+      }
+  .personal_info{
+    display: block;
+    text-align: center;
+    margin: auto;
+    width: 100%;
+    padding: 0 5%;
+      }
+  .middle_right_container{
+    padding: 0 4% 8% 4%;
+    width: 100%;
+        }
 }
