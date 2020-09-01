@@ -261,10 +261,11 @@ footer{
 @media only screen and (max-width: 768px) {
 .dragonworld{
   overflow: hidden;
+  width: calc(100%-100vw-100%);
 }
   .top_container{
     position: relative;
-    width: calc(100%-100vw-100%);
+    width: 100%;
     height: 100vh;
     text-align: center;
     z-index: 555;
