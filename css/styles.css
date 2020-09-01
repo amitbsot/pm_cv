@@ -259,7 +259,9 @@ footer{
 }
 
 @media only screen and (max-width: 768px) {
-
+.dragonworld{
+  overflow: hidden;
+}
   .top_container{
     position: relative;
     width: 100%;
@@ -276,7 +278,8 @@ footer{
     padding-top: 30px;
   }
   .goku{
-    width: 100%
+    width: 100%;
+    height: auto;
   }
   .middle_container{
     position:relative;
