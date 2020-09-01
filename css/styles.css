@@ -10,12 +10,11 @@ body{
   margin: 0px;
   font-family: 'Montserrat', sans-serif;
   font-size: 1.2rem;
-  color: #383838;
   min-width: 500px;
   white-space: pre-pre-line;
 }
 h1{
-  font-size: 40PX ;
+  font-size: 3rem ;
   color: #ebecf1;
   display: grid;
 
@@ -41,7 +40,9 @@ h5{
   width: 10%;
   margin: 10% 50%;
 }*/
-
+li{
+  padding: 5px;
+}
 ul.nav{
   padding: 12px 0;
   display:block;
@@ -59,6 +60,7 @@ li.nav-nav:not(:first-child):before{
 p{
   padding: 1% 0;
 }
+
 #bodycontent_summary{
     text-align: left;
     margin-top: 15%;
@@ -145,7 +147,7 @@ p{
   display:flex;
 }
 .middle_left_container {
-  font-size: 2rem;
+  font-size: 1.5rem;
   color: #ebecf1;
   line-height: 2;
   width: 50%;
@@ -182,6 +184,7 @@ p{
 .mailto:hover{
   color: #d9adad;
   font-weight: bolder;
+
 }
 .mailto:active{
   color: blue;
@@ -226,9 +229,10 @@ p{
   display: block;
   width: 100%;
   left: 0;
-  top: 0;
-  margin-top: 10%;
+  bottom: 0;
+  margin-bottom: 5%;
   z-index: 0;
+  font-family: 'Press Start 2P', cursive;
 }
 .goku_wins{
   position: fixed;
@@ -238,7 +242,6 @@ p{
   top: 50%;
   transform: translate(-50%, -50%);
   z-index: 0;
-  overflow: visible;
 }
 footer{
   display: block;
@@ -256,6 +259,7 @@ footer{
   bottom: 0;
   padding: 50px 0 20px 0;
   margin: 0;
+
 }
 
 @media only screen and (max-width: 768px) {
@@ -265,7 +269,6 @@ footer{
 }
   .top_container{
     position: relative;
-    width: 100%;
     height: 100vh;
     text-align: center;
     z-index: 555;
@@ -333,6 +336,7 @@ footer{
 }
 .goku_wins{
   width: 100%;
+  height: auto;
   z-index: 0;
 
 }
