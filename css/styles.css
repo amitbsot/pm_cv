@@ -113,16 +113,10 @@ p{
 }
 
 .goku{
-}
-.dragon_radar{
-  bottom: 0;
   position: absolute;
-  display: block;
-  width: 100%;
-  text-align: center;
-  color: #ffd700;
-  padding: 36px 0;
-  -webkit-animation: goku-genki 10s steps(12) infinite;
+  width:100px;
+  hight:80px;
+    -webkit-animation: goku-genki 10s steps(12) infinite;
   animation: goku-genki 10s steps(12) infinite;
     animation-duration: 10s;
     animation-timing-function: steps(12);
@@ -132,6 +126,16 @@ p{
     animation-fill-mode: none;
     animation-play-state: running;
     animation-name: goku-genki;
+}
+.dragon_radar{
+  bottom: 0;
+  position: absolute;
+  display: block;
+  width: 100%;
+  text-align: center;
+  color: #ffd700;
+  padding: 36px 0;
+
 }
   
 }
