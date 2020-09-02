@@ -117,7 +117,7 @@ p{
   width:100px;
   hight:80px;
     -webkit-animation: goku-genki 10s steps(12) infinite;
-  animation: goku-genki 10s steps(12) infinite;
+  animation: goku-genki 10s steps(12) infinite;{
     animation-duration: 10s;
     animation-timing-function: steps(12);
     animation-delay: 0s;
@@ -126,6 +126,7 @@ p{
     animation-fill-mode: none;
     animation-play-state: running;
     animation-name: goku-genki;
+  }
 }
 .dragon_radar{
   bottom: 0;
