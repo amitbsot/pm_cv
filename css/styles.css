@@ -114,19 +114,25 @@ p{
 
 .goku{
   position: absolute;
-  width:100px;
-  hight:80px;
-    -webkit-animation: goku-genki 10s steps(12) infinite;
-  animation: goku-genki 10s steps(12) infinite;{
-    animation-duration: 10s;
-    animation-timing-function: steps(12);
-    animation-delay: 0s;
-    animation-iteration-count: infinite;
-    animation-direction: normal;
-    animation-fill-mode: none;
-    animation-play-state: running;
-    animation-name: goku-genki;
+  top: -3px;
+  left: -27px;
+  width: 50px;
+  height: 37px;
+  background-position: 100% 0;
+  background-size: cover;
+  animation: goku-genki 10s steps(12) infinite;
+}
+@keyframes goku-genki { 20% ,100% 
+  {
+    background-position: 0 0;
   }
+  0% {
+    background-position: 0 0;
+  }
+  10% {
+    background-position: 100% 0;
+  }
+}
 }
 .dragon_radar{
   bottom: 0;
