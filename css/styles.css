@@ -352,9 +352,5 @@ bottom: 10%;
     top: 50%;
     transform: translate(-50%, -50%);
  }
- .personal_info{
-   display: block;
-   width: 100%;
-   margin: auto;
-     }
+
 }
