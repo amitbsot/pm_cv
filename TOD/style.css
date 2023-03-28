@@ -36,10 +36,9 @@ main {
 
 .output {
     text-align: center;
-    /* bottom: 20%; */
     width: 100%;
     position: fixed;
-    top: 50%;
+    top: 30%;
 }
 
 #question-output {
