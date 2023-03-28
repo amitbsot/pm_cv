@@ -25,3 +25,16 @@ dareButton.addEventListener("click", () => {
   const randomDare = dareList[Math.floor(Math.random() * dareList.length)];
   questionOutput.textContent = randomDare;
 });
+
+let lastScrollTop = 0;
+
+window.addEventListener("scroll", function() {
+  const st = window.pageYOffset || document.documentElement.scrollTop;
+  if (st > lastScrollTop){
+    // Scrolling down
+    return false; // Cancel scroll down
+  } else {
+    // Scrolling up
+    lastScrollTop = st;
+  }
+});
