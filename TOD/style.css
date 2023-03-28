@@ -82,7 +82,7 @@ button {
 
 /* Customize the scrollbar appearance */
 body::-webkit-scrollbar {
-  width: 0.1em;
+  width: 1px;
 }
 
 body::-webkit-scrollbar-thumb {
