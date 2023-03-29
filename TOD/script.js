@@ -1,15 +1,19 @@
 const truthList = [
   "What's the most embarrassing thing you've ever done?",
-  "Have you ever lied to your best friend?",
+  "Have you ever lied to your best friend, and about what?",
   "What's your biggest fear?",
   "What's the craziest thing you've ever done?",
+  "Have you ever thought about being intimate with your sex?",
+  “Have you tried to make out with the same sex”,
+  
 ];
 
 const dareList = [
   "Sing a song in public",
   "Do a handstand for 10 seconds",
-  "Tell a joke in a silly voice",
-  "Eat a spoonful of hot sauce",
+  "Tell a joke in wear something that your partner wants ones a silly voice",
+  "Eat something sweet from your partner's privets",
+  “Wear something that your partner Wants”
 ];
 
 const truthButton = document.getElementById("truth-button");
