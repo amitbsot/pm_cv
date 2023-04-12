@@ -9,6 +9,7 @@ body {
 overflow-y: hidden;
 background-image: url('TOD BG option 1.jpg'); 
 background-size: 100%; /* Set the background image size */
+background-repeat: no-repeat;
   background-color: red;
   font-family: Arial, sans-serif;
   position: absolute;
