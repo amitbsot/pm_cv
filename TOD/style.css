@@ -4,8 +4,9 @@
   padding: 0;
 }
 
+
 body {
-overflow: hidden;
+overflow-y: hidden;
 background-image: url('TOD BG option 1.jpg'); 
 background-size: 100%; /* Set the background image size */
   background-color: red;

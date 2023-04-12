@@ -328,3 +328,12 @@ dareButton.addEventListener("click", () => {
   const randomDare = dareList[Math.floor(Math.random() * dareList.length)];
   questionOutput.textContent = randomDare;
 });
+
+window.addEventListener('scroll', function(e) {
+  if (window.scrollY <= 0) {
+    // If scroll position is at the top of the page or above, allow scrolling
+    document.body.style.overflowY = 'scroll';
+  } else {
+    // If scroll position is below the top of the page, prevent scrolling down
+    document.body.style.overflowY = 'hidden';
+  }
