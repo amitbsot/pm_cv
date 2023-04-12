@@ -337,3 +337,4 @@ window.addEventListener('scroll', function(e) {
     // If scroll position is below the top of the page, prevent scrolling down
     document.body.style.overflowY = 'hidden';
   }
+});
