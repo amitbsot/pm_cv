@@ -2,22 +2,7 @@
 <html>
 <head>
     <title>IMDb Scraper</title>
-    <style>
-        #container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        #inputBox {
-            width: 300px;
-            height: 30px;
-            margin-right: 10px;
-        }
-        #submitButton {
-            height: 36px;
-        }
-    </style>
+    <!-- Your styles here -->
 </head>
 <body>
     <div id="container">
@@ -29,8 +14,19 @@
     <script>
         document.getElementById('submitButton').addEventListener('click', function() {
             var url = document.getElementById('inputBox').value;
-            // Call your Python script here with the url
-            // Display the result in the "result" div
+            fetch('/scrape', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ url: url })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the scraped data (update the DOM with the results)
+                document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(error => console.error(error));
         });
     </script>
 </body>
