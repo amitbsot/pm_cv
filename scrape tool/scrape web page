@@ -1,0 +1,28 @@
+import React, { useState } from 'react';
+
+const IMDbScraper = () => {
+  const [url, setUrl] = useState('');
+
+  const handleSubmit = () => {
+    // Call your Python script here with the url
+    // Display the result in the "result" div
+  };
+
+  return (
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <input
+        type="text"
+        placeholder="Paste IMDb link here"
+        value={url}
+        onChange={e => setUrl(e.target.value)}
+        style={{ width: 300, height: 30, marginRight: 10 }}
+      />
+      <button onClick={handleSubmit} style={{ height: 36 }}>
+        Submit
+      </button>
+      <div id="result"></div>
+    </div>
+  );
+};
+
+export default IMDbScraper;
