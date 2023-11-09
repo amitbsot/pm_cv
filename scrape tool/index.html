@@ -8,7 +8,7 @@
 </head>
 <body>
     <div id="container">
-        <input id="inputBox" type="text" placeholder="Paste IMDb link here 17">
+        <input id="inputBox" type="text" placeholder="Paste IMDb link here">
         <button id="submitButton">Submit</button>
         <div id="result"></div>
     </div>
@@ -23,12 +23,7 @@
                 },
                 body: JSON.stringify({ url: url })
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
                 document.getElementById('result').innerHTML = ''; // Clear previous results
                 if ('error' in data) {
