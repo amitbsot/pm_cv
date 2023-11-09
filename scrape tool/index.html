@@ -8,7 +8,7 @@
 </head>
 <body>
     <div id="container">
-        <input id="inputBox" type="text" placeholder="Paste IMDb link here 15">
+        <input id="inputBox" type="text" placeholder="Paste IMDb link here 17">
         <button id="submitButton">Submit</button>
         <div id="result"></div>
     </div>
@@ -34,11 +34,7 @@
                 if ('error' in data) {
                     document.getElementById('result').textContent = 'Error: ' + data.error;
                 } else {
-                    Object.keys(data).forEach(function(key) {
-                        var paragraph = document.createElement('p');
-                        paragraph.textContent = key + ': ' + data[key];
-                        document.getElementById('result').appendChild(paragraph);
-                    });
+                    document.getElementById('result').textContent = data;
                 }
             })
             .catch(error => {
