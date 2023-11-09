@@ -2,12 +2,32 @@
 <html>
 <head>
     <title>IMDb Scraper</title>
-    <!-- Your styles here -->
+    <style>
+        #container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+        }
+        #inputBox {
+            width: 300px;
+            height: 30px;
+            margin-bottom: 10px;
+        }
+        #submitButton {
+            height: 36px;
+        }
+        #error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
     <div id="container">
         <input id="inputBox" type="text" placeholder="Paste IMDb link here">
         <button id="submitButton">Submit</button>
+        <div id="error"></div>
     </div>
     <div id="result"></div>
 
@@ -21,12 +41,20 @@
                 },
                 body: JSON.stringify({ url: url })
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
             .then(data => {
-                // Handle the scraped data (update the DOM with the results)
+                document.getElementById('error').textContent = ''; // Clear any previous error message
                 document.getElementById('result').textContent = JSON.stringify(data, null, 2);
             })
-            .catch(error => console.error(error));
+            .catch(error => {
+                console.error(error);
+                document.getElementById('error').textContent = 'Error: ' + error.message;
+            });
         });
     </script>
 </body>
