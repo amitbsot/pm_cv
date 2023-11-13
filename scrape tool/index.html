@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IMDb Scraper</title>
     <style>
         /* Your CSS styles here */
@@ -23,13 +25,23 @@
                 },
                 body: JSON.stringify({ url: url })
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
             .then(data => {
                 document.getElementById('result').innerHTML = ''; // Clear previous results
                 if ('error' in data) {
                     document.getElementById('result').textContent = 'Error: ' + data.error;
                 } else {
-                    document.getElementById('result').textContent = data;
+                    // Display the scraped data
+                    Object.keys(data).forEach(function(key) {
+                        var paragraph = document.createElement('p');
+                        paragraph.textContent = key + ': ' + data[key];
+                        document.getElementById('result').appendChild(paragraph);
+                    });
                 }
             })
             .catch(error => {
