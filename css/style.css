@@ -1,74 +1,91 @@
+/* Reset Styles */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-body {
-  background-color: red;
-  font-family: Arial, sans-serif;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 10%;
-}
+/* Default Styles */
 
-header {
-  text-align: center;
-  margin-top: 20px;
+body {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.4rem;
+  margin: 0;
+  overflow-x: hidden;
 }
 
 h1 {
-  color: black;
+  font-size: 3rem;
+  color: #ebecf1;
+  display: grid;
 }
 
-main {
+/* Navigation Styles */
+
+ul.nav {
+  padding: 12px 0;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20%;
-  height: 100%;
+  list-style: none;
 }
 
-.output {
-  text-align: center;
-  bottom: 20%;
-  width: 100%;
-  position: relative;
-  height: 50%;
+li.nav-nav {
+  margin-right: 12px;
 }
 
-#question-output {
-  font-size: 24px;
-  font-weight: bold;
-  color: black;
-  position: fixed;
-  width: 100%;
-  text-align: center;
+li.nav-nav:not(:first-child)::before {
+  content: '/';
+  margin: 0 12px;
 }
 
-.buttons {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
+.scouter_nav {
+  color: #ffd700;
+  text-decoration: none;
+  transition: color 0.3s ease-in-out;
 }
 
-button {
-  margin: 10px;
-  padding: 10px;
-  font-size: 18px;
-  border-radius: 10px;
-  color: white;
-  font-weight: bold;
+.scouter_nav:hover {
+  color: #E8B10C;
 }
 
-#truth-button {
-  background-color: green;
+/* Mobile Styles */
+
+@media only screen and (max-width: 768px) {
+  body {
+    font-size: 1rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  .nav {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .burger {
+    display: block;
+  }
+
+  .goku {
+    display: none;
+  }
+
+  .winner,
+  .win,
+  .bottom-table-win,
+  .goku_wins {
+    display: none;
+  }
+
+  #bodycontent_summary,
+  #education,
+  #profession,
+  #military {
+    margin-top: 10%;
+    padding: 0 12px;
+  }
 }
 
-#dare-button {
-  background-color: purple;
-}
-
+/* Your Existing CSS Styles */
+/* ... */
