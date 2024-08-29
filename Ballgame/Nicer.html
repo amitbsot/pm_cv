@@ -38,7 +38,7 @@
             color: 'orange',
             dx: 0,
             dy: 0,
-            gravity: 0.2,
+            gravity: 0.5,
             bounce: 0.7
         };
 
@@ -53,7 +53,7 @@
         function drawBall() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.beginPath();
-            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2));
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
             ctx.fillStyle = ball.color;
             ctx.fill();
             ctx.strokeStyle = 'black';
@@ -112,7 +112,7 @@
 
                 if (distance < ball.radius) {
                     const angle = Math.atan2(dy, dx);
-                    const speed = 5;
+                    const speed = 10;
                     ball.dx = Math.cos(angle) * speed;
                     ball.dy = Math.sin(angle) * speed;
                     bounceCount++;
