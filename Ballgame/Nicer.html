@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Basketball Bounce</title>
+    <title>Basketball Bounce on Moon</title>
     <style>
         body {
             margin: 0;
@@ -38,14 +38,16 @@
             color: 'orange',
             dx: 0,
             dy: 0,
-            gravity: 0.2, // האטת מהירות התנועה
-            bounce: 0.8 // העלאת קפיצת הכדור לגובה
+            gravity: 0.05, // כוח כבידה נמוך כמו על הירח
+            bounce: 0.9 // קפיצה גבוהה יותר
         };
 
         const pointer = {
             x: 0,
             y: 0
         };
+
+        const touchRadius = 50; // רדיוס מגע גדול יותר לשיפור הרגישות
 
         let bounceCount = 0;
         let highScore = 0;
@@ -115,9 +117,10 @@
                 const dy = ball.y - pointer.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
 
-                if (distance < ball.radius) {
+                // השתמש ברדיוס מגע כדי לשפר את הרגישות
+                if (distance < ball.radius + touchRadius) {
                     const angle = Math.atan2(dy, dx);
-                    const speed = 15; // מהירות חדשה
+                    const speed = 25; // מהירות חדשה לקפיצה גבוהה
                     ball.dx = Math.cos(angle) * speed;
                     ball.dy = Math.sin(angle) * speed;
                     if (isOnGround) {
