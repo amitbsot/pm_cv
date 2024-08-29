@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Basketball Bounce on Moon</title>
+    <title>Basketball Bounce</title>
     <style>
         body {
             margin: 0;
@@ -38,8 +38,8 @@
             color: 'orange',
             dx: 0,
             dy: 0,
-            gravity: 0.05, // כוח כבידה נמוך כמו על הירח
-            bounce: 0.9 // קפיצה גבוהה יותר
+            gravity: 0.5,
+            bounce: 0.7
         };
 
         const pointer = {
@@ -47,12 +47,8 @@
             y: 0
         };
 
-        const touchRadius = 50; // רדיוס מגע גדול יותר לשיפור הרגישות
-
         let bounceCount = 0;
         let highScore = 0;
-        let isOnGround = false;
-        let tempBounceCount = 0;
 
         function drawBall() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -101,12 +97,9 @@
             if (ball.y + ball.radius > canvas.height) {
                 ball.y = canvas.height - ball.radius;
                 ball.dy *= -ball.bounce;
-                if (!isOnGround) {
-                    isOnGround = true;
-                    tempBounceCount = bounceCount; // Save bounce count when hitting the ground
-                }
                 bounced = true;
-            } else if (ball.y - ball.radius < 0) {
+            }
+            if (ball.y - ball.radius < 0) {
                 ball.y = ball.radius;
                 ball.dy *= -ball.bounce;
                 bounced = true;
@@ -117,16 +110,11 @@
                 const dy = ball.y - pointer.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
 
-                // השתמש ברדיוס מגע כדי לשפר את הרגישות
-                if (distance < ball.radius + touchRadius) {
+                if (distance < ball.radius) {
                     const angle = Math.atan2(dy, dx);
-                    const speed = 25; // מהירות חדשה לקפיצה גבוהה
+                    const speed = 10;
                     ball.dx = Math.cos(angle) * speed;
                     ball.dy = Math.sin(angle) * speed;
-                    if (isOnGround) {
-                        isOnGround = false;
-                        bounceCount = 0; // Reset bounce count when ball leaves the ground
-                    }
                     bounceCount++;
                     if (bounceCount > highScore) {
                         highScore = bounceCount;
