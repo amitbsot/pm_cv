@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basketball Bounce</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
+            background: #f0f0f0;
+        }
+        /* פונט כדורסל */
+        @import url('https://fonts.googleapis.com/css2?family=Athiti:wght@700&display=swap');
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const ball = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            radius: 30,
+            color: 'orange',
+            dx: 0,
+            dy: 0,
+            gravity: 0.5,
+            bounce: 0.7
+        };
+
+        const pointer = {
+            x: 0,
+            y: 0
+        };
+
+        let bounceCount = 0;
+        let highScore = 0;
+
+        function drawBall() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fillStyle = ball.color;
+            ctx.fill();
+            ctx.strokeStyle = 'black';
+            ctx.stroke();
+            ctx.closePath();
+        }
+
+        function drawCounter() {
+            ctx.font = '36px Athiti';  // פונט עם עיצוב כדורסל
+            ctx.fillStyle = 'black';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('Bounces: ' + bounceCount, canvas.width / 2, 40);
+        }
+
+        function drawHighScore() {
+            ctx.font = '36px Athiti';  // פונט עם עיצוב כדורסל
+            ctx.fillStyle = 'black';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('High Score: ' + highScore, 30, 40);
+        }
+
+        function updateBall() {
+            ball.dy += ball.gravity;
+            ball.x += ball.dx;
+            ball.y += ball.dy;
+
+            let bounced = false;
+
+            if (ball.x + ball.radius > canvas.width) {
+                ball.x = canvas.width - ball.radius;
+                ball.dx *= -ball.bounce;
+                bounced = true;
+            }
+            if (ball.x - ball.radius < 0) {
+                ball.x = ball.radius;
+                ball.dx *= -ball.bounce;
+                bounced = true;
+            }
+            if (ball.y + ball.radius > canvas.height) {
+                ball.y = canvas.height - ball.radius;
+                ball.dy *= -ball.bounce;
+                bounced = true;
+            }
+            if (ball.y - ball.radius < 0) {
+                ball.y = ball.radius;
+                ball.dy *= -ball.bounce;
+                bounced = true;
+            }
+
+            if (bounced) {
+                const dx = ball.x - pointer.x;
+                const dy = ball.y - pointer.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < ball.radius) {
+                    const angle = Math.atan2(dy, dx);
+                    const speed = 10;
+                    ball.dx = Math.cos(angle) * speed;
+                    ball.dy = Math.sin(angle) * speed;
+                    bounceCount++;
+                    if (bounceCount > highScore) {
+                        highScore = bounceCount;
+                    }
+                }
+            }
+
+            drawBall();
+            drawCounter();
+            drawHighScore();
+            requestAnimationFrame(updateBall);
+        }
+
+        function handlePointerMove(event) {
+            const rect = canvas.getBoundingClientRect();
+            pointer.x = event.clientX - rect.left;
+            pointer.y = event.clientY - rect.top;
+        }
+
+        canvas.addEventListener('mousemove', handlePointerMove);
+        canvas.addEventListener('touchmove', function(event) {
+            if (event.touches.length > 0) {
+                const rect = canvas.getBoundingClientRect();
+                pointer.x = event.touches[0].clientX - rect.left;
+                pointer.y = event.touches[0].clientY - rect.top;
+            }
+        });
+
+        updateBall();
+    </script>
+</body>
+</html>
