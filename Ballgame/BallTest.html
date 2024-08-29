@@ -47,8 +47,8 @@
         const markerHeight = 10;
         let ballX = canvas.width / 2;
         let ballY = canvas.height / 2;
-        let ballSpeedX = 30;
-        let ballSpeedY = 30;
+        let ballSpeedX = 5;
+        let ballSpeedY = 5;
         let markerX = canvas.width / 2;
         let numBounces = 0;
         let maxBounces = 0;
@@ -58,7 +58,7 @@
         function drawBall() {
             ctx.beginPath();
             ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
-            ctx.fillStyle = 'orange';
+            ctx.fillStyle = 'darkgrey'; // שינוי צבע הכדור לאפור כהה
             ctx.fill();
             ctx.closePath();
         }
@@ -102,6 +102,8 @@
                 if (markerX - markerWidth / 2 < ballX && ballX < markerX + markerWidth / 2) {
                     // הכדור נוגע בסמן - קופץ למעלה
                     ballSpeedY = -Math.abs(ballSpeedY); // מבטיח שהכדור ינוע למעלה
+                    ballSpeedX += ballSpeedX > 0 ? 0.2 : -0.2; // הגדלת מהירות ה-X
+                    ballSpeedY += ballSpeedY > 0 ? 0.2 : -0.2; // הגדלת מהירות ה-Y
                     numBounces++;
                     resetBounces = false;
                 } else {
