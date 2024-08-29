@@ -100,18 +100,19 @@
 
             if (ballY + ballRadius > canvas.height) {
                 if (markerX - markerWidth / 2 < ballX && ballX < markerX + markerWidth / 2) {
+                    // הכדור נוגע בסמן - קופץ למעלה
+                    ballSpeedY = -Math.abs(ballSpeedY); // מבטיח שהכדור ינוע למעלה
                     numBounces++;
                     resetBounces = false;
                 } else {
                     resetBounces = true;
                 }
-                
-                ballX = canvas.width / 2;
-                ballY = canvas.height / 2;
-                ballSpeedX = 5;
-                ballSpeedY = 5;
 
                 if (resetBounces) {
+                    ballX = canvas.width / 2;
+                    ballY = canvas.height / 2;
+                    ballSpeedX = 5;
+                    ballSpeedY = 5;
                     numBounces = 0;
                 }
 
