@@ -49,7 +49,7 @@
             y: 0
         };
 
-        const touchRadius = 40; // רדיוס מגע גדול יותר לשיפור הרגישות
+        const touchRadius = 50; // רדיוס מגע גדול יותר לשיפור הרגישות
 
         let bounceCount = 0;     // ספירת הקפצות
         let highScore = 0;       // הציון הגבוה ביותר
@@ -120,7 +120,8 @@
                 const dy = ball.y - pointer.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
 
-                if (distance < ball.radius + touchRadius) {
+                // התחשב גם אם המגע קורה בתחתית הכדור
+                if (distance < ball.radius + touchRadius || (pointer.y > ball.y && pointer.y < ball.y + ball.radius)) {
                     const angle = Math.atan2(dy, dx);
                     const speed = 15;  // מהירות התנועה של הכדור
                     ball.dx = Math.cos(angle) * speed;
