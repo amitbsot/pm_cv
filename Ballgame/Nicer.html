@@ -49,6 +49,8 @@
 
         let bounceCount = 0;
         let highScore = 0;
+        let isOnGround = false;
+        let tempBounceCount = 0;
 
         function drawBall() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -98,8 +100,11 @@
                 ball.y = canvas.height - ball.radius;
                 ball.dy *= -ball.bounce;
                 bounced = true;
-            }
-            if (ball.y - ball.radius < 0) {
+                if (!isOnGround) {
+                    isOnGround = true;
+                    tempBounceCount = bounceCount; // Save bounce count when hitting the ground
+                }
+            } else if (ball.y - ball.radius < 0) {
                 ball.y = ball.radius;
                 ball.dy *= -ball.bounce;
                 bounced = true;
@@ -115,6 +120,10 @@
                     const speed = 10;
                     ball.dx = Math.cos(angle) * speed;
                     ball.dy = Math.sin(angle) * speed;
+                    if (isOnGround) {
+                        isOnGround = false;
+                        bounceCount = 0; // Reset bounce count when ball leaves the ground
+                    }
                     bounceCount++;
                     if (bounceCount > highScore) {
                         highScore = bounceCount;
