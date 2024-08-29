@@ -7,7 +7,8 @@
     <style>
         body {
             margin: 0;
-            overflow: hidden;
+            overflow: hidden; /* מניעת גלילה */
+            touch-action: none; /* מניעת זום ותנועה בטאצ' */
         }
         canvas {
             display: block;
@@ -23,6 +24,7 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
+        // פונקציה שמתאימה את גודל הקנבס בהתאם לגודל המסך
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -32,14 +34,14 @@
         window.addEventListener('resize', resizeCanvas);
 
         const ball = {
-            x: canvas.width / 2,
-            y: canvas.height / 2,
-            radius: 30,
-            color: 'orange',
-            dx: 0,
-            dy: 0,
-            gravity: 0.5,
-            bounce: 0.7
+            x: canvas.width / 2,   // מיקום ההתחלה בציר X
+            y: canvas.height / 2,  // מיקום ההתחלה בציר Y
+            radius: 30,            // רדיוס הכדור
+            color: 'orange',       // צבע הכדור
+            dx: 0,                 // מהירות תנועה בציר X
+            dy: 0,                 // מהירות תנועה בציר Y
+            gravity: 0.1,          // כוח כבידה נמוך לדימוי ירח
+            bounce: 0.8            // קפיצת הכדור לגובה גבוה יותר
         };
 
         const pointer = {
@@ -47,9 +49,12 @@
             y: 0
         };
 
-        let bounceCount = 0;
-        let highScore = 0;
+        const touchRadius = 40; // רדיוס מגע גדול יותר לשיפור הרגישות
 
+        let bounceCount = 0;     // ספירת הקפצות
+        let highScore = 0;       // הציון הגבוה ביותר
+
+        // פונקציה לציור הכדור על הקנבס
         function drawBall() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.beginPath();
@@ -61,6 +66,7 @@
             ctx.closePath();
         }
 
+        // פונקציה לציור מספר ההקפצות הנוכחי
         function drawCounter() {
             ctx.font = '36px Athiti';  // פונט עם עיצוב כדורסל
             ctx.fillStyle = 'black';
@@ -69,6 +75,7 @@
             ctx.fillText('Bounces: ' + bounceCount, canvas.width / 2, 40);
         }
 
+        // פונקציה לציור הציון הגבוה ביותר
         function drawHighScore() {
             ctx.font = '36px Athiti';  // פונט עם עיצוב כדורסל
             ctx.fillStyle = 'black';
@@ -77,13 +84,15 @@
             ctx.fillText('High Score: ' + highScore, 30, 40);
         }
 
+        // פונקציה לעדכון מצב הכדור ולטפל בהתנהגות הקפיצה
         function updateBall() {
-            ball.dy += ball.gravity;
-            ball.x += ball.dx;
-            ball.y += ball.dy;
+            ball.dy += ball.gravity;  // הוספת כוח הכבידה למהירות Y
+            ball.x += ball.dx;        // עדכון מיקום X
+            ball.y += ball.dy;        // עדכון מיקום Y
 
             let bounced = false;
 
+            // טיפול במגע עם גבולות הקנבס
             if (ball.x + ball.radius > canvas.width) {
                 ball.x = canvas.width - ball.radius;
                 ball.dx *= -ball.bounce;
@@ -105,19 +114,20 @@
                 bounced = true;
             }
 
+            // טיפול במגע עם הסמן או האצבע
             if (bounced) {
                 const dx = ball.x - pointer.x;
                 const dy = ball.y - pointer.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
 
-                if (distance < ball.radius) {
+                if (distance < ball.radius + touchRadius) {
                     const angle = Math.atan2(dy, dx);
-                    const speed = 10;
+                    const speed = 15;  // מהירות התנועה של הכדור
                     ball.dx = Math.cos(angle) * speed;
                     ball.dy = Math.sin(angle) * speed;
                     bounceCount++;
                     if (bounceCount > highScore) {
-                        highScore = bounceCount;
+                        highScore = bounceCount;  // עדכון הציון הגבוה ביותר
                     }
                 }
             }
@@ -128,12 +138,14 @@
             requestAnimationFrame(updateBall);
         }
 
+        // פונקציה לעדכון מיקום הסמן או האצבע
         function handlePointerMove(event) {
             const rect = canvas.getBoundingClientRect();
             pointer.x = event.clientX - rect.left;
             pointer.y = event.clientY - rect.top;
         }
 
+        // הוספת מאזינים לאירועים של תנועה עם העכבר ולטאצ'ים
         canvas.addEventListener('mousemove', handlePointerMove);
         canvas.addEventListener('touchmove', function(event) {
             if (event.touches.length > 0) {
