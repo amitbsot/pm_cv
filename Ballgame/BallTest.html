@@ -47,8 +47,8 @@
         const markerHeight = 10;
         let ballX = canvas.width / 2;
         let ballY = canvas.height / 2;
-        let ballSpeedX = 10;
-        let ballSpeedY = 10;
+        let ballSpeedX = 30;
+        let ballSpeedY = 30;
         let markerX = canvas.width / 2;
         let numBounces = 0;
         let maxBounces = 0;
@@ -58,7 +58,7 @@
         function drawBall() {
             ctx.beginPath();
             ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
-            ctx.fillStyle = 'green';
+            ctx.fillStyle = 'orange';
             ctx.fill();
             ctx.closePath();
         }
