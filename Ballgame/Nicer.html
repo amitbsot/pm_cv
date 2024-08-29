@@ -38,8 +38,8 @@
             color: 'orange',
             dx: 0,
             dy: 0,
-            gravity: 0.5,
-            bounce: 0.7
+            gravity: 0.2, // האטת מהירות התנועה
+            bounce: 0.8 // העלאת קפיצת הכדור לגובה
         };
 
         const pointer = {
@@ -73,7 +73,7 @@
 
         function drawHighScore() {
             ctx.font = '36px Athiti';  // פונט עם עיצוב כדורסל
-            ctx.fillStyle = 'red';
+            ctx.fillStyle = 'black';
             ctx.textAlign = 'left';
             ctx.textBaseline = 'middle';
             ctx.fillText('High Score: ' + highScore, 30, 40);
@@ -99,11 +99,11 @@
             if (ball.y + ball.radius > canvas.height) {
                 ball.y = canvas.height - ball.radius;
                 ball.dy *= -ball.bounce;
-                bounced = true;
                 if (!isOnGround) {
                     isOnGround = true;
                     tempBounceCount = bounceCount; // Save bounce count when hitting the ground
                 }
+                bounced = true;
             } else if (ball.y - ball.radius < 0) {
                 ball.y = ball.radius;
                 ball.dy *= -ball.bounce;
@@ -117,7 +117,7 @@
 
                 if (distance < ball.radius) {
                     const angle = Math.atan2(dy, dx);
-                    const speed = 10;
+                    const speed = 15; // מהירות חדשה
                     ball.dx = Math.cos(angle) * speed;
                     ball.dy = Math.sin(angle) * speed;
                     if (isOnGround) {
