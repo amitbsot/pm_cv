@@ -36,10 +36,10 @@
             y: canvas.height / 2,
             radius: 30,
             color: 'orange',
-            dx: 0,
-            dy: 0,
-            gravity: 0.5,
-            bounce: 0.7
+            dx: 0.5,
+            dy: 0.5,
+            gravity: 0.2,
+            bounce: 1.5
         };
 
         const pointer = {
@@ -112,7 +112,7 @@
 
                 if (distance < ball.radius) {
                     const angle = Math.atan2(dy, dx);
-                    const speed = 10;
+                    const speed = 5;
                     ball.dx = Math.cos(angle) * speed;
                     ball.dy = Math.sin(angle) * speed;
                     bounceCount++;
