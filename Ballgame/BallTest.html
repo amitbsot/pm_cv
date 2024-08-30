@@ -18,24 +18,24 @@
             border: 1px solid #000;
             width: 100%;
             height: 65%;
-            top: 10%;
+            top: 5%;
         }
         .score {
             position: absolute;
-            top: 10px;
+            top: 0;
             left: 10px;
             font-size: 24px;
             color: red;
-            visibility: hidden;
+            
         }
         .bounces {
             position: absolute;
-            top: 10px;
+            top: 0;
             left: 50%;
             transform: translateX(-50%);
             font-size: 24px;
             color: black;
-            visibility: hidden;
+            
         }
     </style>
 </head>
@@ -99,6 +99,7 @@
             ctx.fillStyle = 'red';
             ctx.textAlign = 'left';
             ctx.fillText(`שיא: ${maxBounces}`, canvas.width * 0.02, canvas.height * 0.05);
+            visibility: hidden;
         }
 
         // פונקציה לעדכון מיקום הכדור
