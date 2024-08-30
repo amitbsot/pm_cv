@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>משחק קפיצות הכדור</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        canvas {
+            border: 1px solid #000;
+            width: 100%;
+            height: auto;
+            max-width: 800px;
+            max-height: 600px;
+        }
+        .score {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 24px;
+            color: red;
+        }
+        .bounces {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="score">שיא: 0</div>
+    <div class="bounces">קפיצות: 0</div>
+    <canvas id="gameCanvas"></canvas>
+    <script>
+        // אתחול משתנים
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let ballRadius = 20;
+        let markerWidth = 100;
+        let markerHeight = 10;
+        let ballX, ballY, ballSpeedX, ballSpeedY, markerX, numBounces, maxBounces, resetBounces;
+
+        function init() {
+            canvas.width = Math.min(window.innerWidth, 800);
+            canvas.height = canvas.width * 0.75;
+
+            ballRadius = canvas.width * 0.025;
+            markerWidth = canvas.width * 0.2;
+            markerHeight = canvas.height * 0.02;
+
+            ballX = canvas.width / 2;
+            ballY = canvas.height / 2;
+            ballSpeedX = canvas.width * 0.0375;
+            ballSpeedY = canvas.height * 0.0375;
+            markerX = canvas.width / 2;
+            numBounces = 0;
+            maxBounces = 0;
+            resetBounces = false;
+        }
+
+        // פונקציה לציור הכדור
+        function drawBall() {
+            ctx.beginPath();
+            ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
+            ctx.fillStyle = 'darkgrey';
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        // פונקציה לציור הסמן
+        function drawMarker() {
+            ctx.beginPath();
+            ctx.rect(markerX - markerWidth / 2, canvas.height - markerHeight, markerWidth, markerHeight);
+            ctx.fillStyle = 'black';
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        // פונקציה לציור הטקסטים
+        function drawText() {
+            ctx.font = `${canvas.height * 0.04}px Arial`;
+            ctx.fillStyle = 'black';
+            ctx.textAlign = 'center';
+            ctx.fillText(`קפיצות: ${numBounces}`, canvas.width / 2, canvas.height * 0.05);
+            
+            ctx.fillStyle = 'red';
+            ctx.textAlign = 'left';
+            ctx.fillText(`שיא: ${maxBounces}`, canvas.width * 0.02, canvas.height * 0.05);
+        }
+
+        // פונקציה לעדכון מיקום הכדור
+        function updateBall() {
+            ballX += ballSpeedX;
+            ballY += ballSpeedY;
+
+            if (ballX - ballRadius < 0 || ballX + ballRadius > canvas.width) {
+                ballSpeedX = -ballSpeedX;
+            }
+
+            if (ballY - ballRadius < 0) {
+                ballSpeedY = -ballSpeedY;
+            }
+
+            if (ballY + ballRadius > canvas.height) {
+                if (markerX - markerWidth / 2 < ballX && ballX < markerX + markerWidth / 2) {
+                    ballSpeedY = -Math.abs(ballSpeedY);
+                    ballSpeedX += ballSpeedX > 0 ? 0.2 : -0.2;
+                    ballSpeedY += ballSpeedY > 0 ? 0.2 : -0.2;
+                    numBounces++;
+                    resetBounces = false;
+                } else {
+                    resetBounces = true;
+                }
+
+                if (resetBounces) {
+                    ballX = canvas.width / 2;
+                    ballY = canvas.height / 2;
+                    ballSpeedX = canvas.width * 0.00625;
+                    ballSpeedY = canvas.height * 0.00625;
+                    numBounces = 0;
+                }
+
+                maxBounces = Math.max(maxBounces, numBounces);
+            }
+        }
+
+        // פונקציה לציור המסך
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawBall();
+            drawMarker();
+            drawText();
+        }
+
+        // לולאת המשחק
+        function gameLoop() {
+            updateBall();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        // מעקב אחרי תנועת העכבר
+        canvas.addEventListener('mousemove', (event) => {
+            markerX = event.clientX - canvas.getBoundingClientRect().left;
+        });
+
+        // מעקב אחרי תנועת אצבע
+        canvas.addEventListener('touchmove', (event) => {
+            event.preventDefault();
+            markerX = event.touches[0].clientX - canvas.getBoundingClientRect().left;
+        });
+
+        // התחלת המשחק
+        window.addEventListener('resize', init);
+        init();
+        gameLoop();
+    </script>
+</body>
+</html>
