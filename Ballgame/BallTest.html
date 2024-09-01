@@ -87,17 +87,17 @@
         }
 
         // פונקציה לציור הטקסטים
-       // function drawText() {
-       //     ctx.font = `${canvas.height * 0.04}px Arial`;
-       //     ctx.fillStyle = 'black';
-       //     ctx.textAlign = 'center';
-        //    ctx.fillText(`קפיצות: ${numBounces}`, canvas.width / 2, canvas.height * 0.05);
+        function drawText() {
+            ctx.font = `${canvas.height * 0.04}px Arial`;
+            ctx.fillStyle = 'black';
+            ctx.textAlign = 'center';
+            ctx.fillText(`קפיצות: ${numBounces}`, canvas.width / 2, canvas.height * 0.05);
             
-        //    ctx.fillStyle = 'red';
-       //     ctx.textAlign = 'left';
-       //     ctx.fillText(`שיא: ${maxBounces}`, canvas.width * 0.02, canvas.height * 0.05);
+            ctx.fillStyle = 'red';
+            ctx.textAlign = 'left';
+            ctx.fillText(`שיא: ${maxBounces}`, canvas.width * 0.02, canvas.height * 0.05);
             
-      //  }
+        }
 
         // פונקציה לעדכון מיקום הכדור
         function updateBall() {
