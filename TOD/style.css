@@ -61,8 +61,8 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
-  position: fixed;
-  bottom: 33%;
+  position: flex;
+  bottom: 25%;
   height: 52px;
   width: 104px;
 }
