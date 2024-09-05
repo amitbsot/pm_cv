@@ -2,7 +2,6 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  overflow: hidden;
 }
 
 
@@ -79,11 +78,6 @@ button {
 
 #truth-button {
   background-color: green;
-  font-size: x-large;
-}
-
-#dare-button {
-  background-color: purple;
   font-size: x-large;
 }
 
