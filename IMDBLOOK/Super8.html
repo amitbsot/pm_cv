@@ -125,9 +125,10 @@
             this.x = canvas.width;
             this.width = X;
             if (fromTop) {
-                this.height = y;
-             //   this.y = 0;
-            } else {
+               this.height = X / 2;
+               this.y = canvas.height - X / 2;
+               }
+             else {
                 if (type === 'rock') {
                     this.height = X / 2;
                     this.y = Math.random() > 0.5 ? canvas.height - X / 2 : canvas.height - X;
