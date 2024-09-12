@@ -55,16 +55,9 @@
     const ctx = canvas.getContext('2d');
     const restartButton = document.getElementById('restartButton');
 
-    // Set canvas dimensions and resize logic
-    function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight - 50; // Subtract ground height
-    }
-
-    // Initialize canvas size
-    resizeCanvas();
-
-    window.addEventListener('resize', resizeCanvas); // Listen for screen size changes
+    // Set canvas dimensions
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight - 50; // Subtract ground height
 
     const X = 50; // Character's height and obstacle dimensions
     const gravity = 0.8;
@@ -74,10 +67,6 @@
     let frameCount = 0;
     let isGameOver = false;
     let startTouchY = 0; // Y position of the touch start
-    let speedMultiplier = 1.5; // Speed multiplier
-    let lastSpeedIncreaseTime = Date.now(); // Track time of last speed increase
-    let startTime = Date.now(); // Track game start time
-    let doubleObstacles = false; // Flag for double obstacles
 
     // Main character object
     const yon = {
@@ -125,18 +114,13 @@
             this.x = canvas.width;
             this.width = X;
             if (fromTop) {
-               this.height = X / 2;
-               this.y = canvas.height - X / 2;
-           } else {
-                if (type === 'rock') {
-                    this.height = X / 2;
-                    this.y = Math.random() > 0.5 ? canvas.height - X / 2 : canvas.height - X;
-                } else if (type === 'hedgehog') {
-                    this.height = X / 2;
-                    this.y = canvas.height - this.height;
-                }
+                this.height = canvas.height - X / 2;  // גובה הצינור עד הרצפה עם רווח קטן
+                this.y = 0;  // מתחיל מלמעלה
+            } else {
+                this.height = X / 2;
+                this.y = canvas.height - this.height;
             }
-            this.speed = 5 * speedMultiplier; // Apply speed multiplier
+            this.speed = 5;
         }
         update() {
             this.x -= this.speed;
@@ -172,10 +156,6 @@
         isGameOver = false;
         score = 0;
         frameCount = 0;
-        speedMultiplier = 1; // Reset speed multiplier
-        lastSpeedIncreaseTime = Date.now(); // Reset timer
-        startTime = Date.now(); // Reset start time
-        doubleObstacles = false; // Reset double obstacle flag
         obstacles = [];
         yon.y = canvas.height - yon.height;
         restartButton.style.display = 'none';
@@ -184,28 +164,10 @@
 
     restartButton.addEventListener('click', resetGame);
 
-    // Generate obstacles
     function generateObstacle() {
-        const timePassed = (Date.now() - startTime) / 10000;
+        const fromTop = Math.random() > 0.5; // Randomly decide if the obstacle comes from the top
         const type = Math.random() > 0.5 ? 'rock' : 'hedgehog';
-
-        // After 60 seconds, add double obstacles
-        if (timePassed >= 60 && !doubleObstacles) {
-            doubleObstacles = true;
-        }
-
-        if (doubleObstacles) {
-            // Add two obstacles close to each other
-            obstacles.push(new Obstacle(type));
-            obstacles.push(new Obstacle(type, true)); // Second obstacle coming from the top
-        } else {
-            // Regular obstacle generation (also top-down obstacles occasionally)
-            if (Math.random() < 0.2) {
-                obstacles.push(new Obstacle(type, true)); // Top-down obstacle
-            } else {
-                obstacles.push(new Obstacle(type));
-            }
-        }
+        obstacles.push(new Obstacle(type, fromTop));
     }
 
     function updateScore() {
@@ -227,14 +189,6 @@
         }
     }
 
-    function increaseSpeed() {
-        const currentTime = Date.now();
-        if (currentTime - lastSpeedIncreaseTime >= 1000) { // Check if 20 seconds have passed
-            speedMultiplier += 0.2; // Increase speed by 0.2
-            lastSpeedIncreaseTime = currentTime; // Update the time of the last speed increase
-        }
-    }
-
     function update() {
         if (isGameOver) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -253,9 +207,6 @@
         // Update and draw main character
         yon.update();
         yon.draw();
-
-        // Increase speed over time
-        increaseSpeed();
 
         // Generate obstacles
         if (frameCount % 100 === 0) {
