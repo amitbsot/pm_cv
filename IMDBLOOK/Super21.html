@@ -87,13 +87,14 @@
             }
         },
         crouch() {
-            this.isCrouching = true;
-            this.height = X / 2;
-            this.speed = 0;
+             this.isCrouching = true;
+             this.height = X / 2;
+             this.y = canvas.height - this.height; // עדכון Y בהתאם לגובה החדש
         },
         standUp() {
             this.isCrouching = false;
             this.height = X;
+            this.y = canvas.height - this.height; // עדכון Y לגובה המקורי
         },
         update() {
             this.y += this.dy;
