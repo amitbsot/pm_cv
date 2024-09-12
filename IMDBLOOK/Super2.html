@@ -17,7 +17,7 @@
             background-color: lightblue;
             border-bottom: 5px solid green;
         }
-        .groundOffset {
+        .ground {
             position: absolute;
             bottom: 0;
             width: 100%;
@@ -139,19 +139,19 @@
     }
 
     // Draw moving ground
-    function drawMovingGround() {
-        groundOffset -= obstacleSpeed; // Move ground at the same speed as obstacles
-        if (groundOffset <= -20) { // Recycle pattern
-            groundOffset = 0;
-        }
-        ctx.fillStyle = 'green';
-        ctx.fillRect(0, canvas.height -50, canvas.width, 50); // Base ground layer
-        ctx.save();
-        ctx.translate(groundOffset, 0);
-        ctx.fillStyle = 'brown';
-        for (let i = 0; i < canvas.width / 20; i++) {
-            ctx.fillRect(i * 20, canvas.height - 50, 10, 50); // Draw repeating ground pattern
-        }
+//    function drawMovingGround() {
+//        groundOffset -= obstacleSpeed; // Move ground at the same speed as obstacles
+ //       if (groundOffset <= -20) { // Recycle pattern
+ //           groundOffset = 0;
+ //       }
+ //       ctx.fillStyle = 'green';
+  //      ctx.fillRect(0, canvas.height -50, canvas.width, 50); // Base ground layer
+  //      ctx.save();
+  //      ctx.translate(groundOffset, 0);
+   //     ctx.fillStyle = 'brown';
+ //       for (let i = 0; i < canvas.width / 20; i++) {
+  //          ctx.fillRect(i * 20, canvas.height - 50, 10, 50); // Draw repeating ground pattern
+    //    }
         ctx.restore();
     }
 
