@@ -74,7 +74,7 @@
     let frameCount = 0;
     let isGameOver = false;
     let startTouchY = 0; // Y position of the touch start
-    let speedMultiplier = 1; // Speed multiplier
+    let speedMultiplier = 1.5; // Speed multiplier
     let lastSpeedIncreaseTime = Date.now(); // Track time of last speed increase
     let startTime = Date.now(); // Track game start time
     let doubleObstacles = false; // Flag for double obstacles
@@ -125,10 +125,8 @@
             this.x = canvas.width;
             this.width = X;
             if (fromTop) {
-               this.height = X / 2;
                this.y = canvas.height - X / 2;
-               }
-             else {
+           } else {
                 if (type === 'rock') {
                     this.height = X / 2;
                     this.y = Math.random() > 0.5 ? canvas.height - X / 2 : canvas.height - X;
@@ -230,7 +228,7 @@
 
     function increaseSpeed() {
         const currentTime = Date.now();
-        if (currentTime - lastSpeedIncreaseTime >= 20000) { // Check if 20 seconds have passed
+        if (currentTime - lastSpeedIncreaseTime >= 1000) { // Check if 20 seconds have passed
             speedMultiplier += 0.2; // Increase speed by 0.2
             lastSpeedIncreaseTime = currentTime; // Update the time of the last speed increase
         }
