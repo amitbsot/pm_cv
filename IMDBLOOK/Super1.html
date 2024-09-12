@@ -25,6 +25,20 @@
             background-color: green;
             background-image: repeating-linear-gradient(90deg, brown 0px, brown 10px, green 10px, green 20px);
         }
+        #restartButton {
+            display: none;
+            position: absolute;
+            left: 50%;
+            top: 60%;
+            transform: translate(-50%, -50%);
+            padding: 10px 20px;
+            font-size: 20px;
+            color: white;
+            background-color: green;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
         @font-face {
             font-family: 'Press Start 2P';
             src: url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
@@ -34,17 +48,19 @@
 <body>
 <canvas id="gameCanvas"></canvas>
 <div class="ground"></div>
+<button id="restartButton">התחל מחדש</button>
 
 <script>
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
+    const restartButton = document.getElementById('restartButton');
 
     // Set canvas dimensions
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight - 50; // Subtract ground height
 
     const X = 50; // Character's height and obstacle dimensions
-    const gravity = 0.2;
+    const gravity = 0.5;
     const jumpHeight = 3 * X;
     let score = 0;
     let obstacles = [];
@@ -135,6 +151,19 @@
         yon.standUp();
     });
 
+    // Reset game
+    function resetGame() {
+        isGameOver = false;
+        score = 0;
+        frameCount = 0;
+        obstacles = [];
+        yon.y = canvas.height - yon.height;
+        restartButton.style.display = 'none';
+        update(); // Restart game loop
+    }
+
+    restartButton.addEventListener('click', resetGame);
+
     function generateObstacle() {
         const type = Math.random() > 0.5 ? 'rock' : 'hedgehog';
         obstacles.push(new Obstacle(type));
@@ -165,6 +194,9 @@
             ctx.fillStyle = 'red';
             ctx.font = '48px Arial';
             ctx.fillText('Game Over', canvas.width / 2 - 100, canvas.height / 2);
+
+            // Show restart button
+            restartButton.style.display = 'block';
             return;
         }
 
