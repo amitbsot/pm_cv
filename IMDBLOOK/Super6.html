@@ -55,9 +55,16 @@
     const ctx = canvas.getContext('2d');
     const restartButton = document.getElementById('restartButton');
 
-    // Set canvas dimensions
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight - 50; // Subtract ground height
+    // Set canvas dimensions and resize logic
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight - 50; // Subtract ground height
+    }
+
+    // Initialize canvas size
+    resizeCanvas();
+
+    window.addEventListener('resize', resizeCanvas); // Listen for screen size changes
 
     const X = 50; // Character's height and obstacle dimensions
     const gravity = 0.8;
@@ -194,7 +201,7 @@
 
     function increaseSpeed() {
         const currentTime = Date.now();
-        if (currentTime - lastSpeedIncreaseTime >= 10000) { // Check if 10 seconds have passed
+        if (currentTime - lastSpeedIncreaseTime >= 20000) { // Check if 20 seconds have passed
             speedMultiplier += 0.2; // Increase speed by 0.2
             lastSpeedIncreaseTime = currentTime; // Update the time of the last speed increase
         }
