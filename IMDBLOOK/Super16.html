@@ -145,9 +145,9 @@
             groundOffset = 0;
         }
         ctx.fillStyle = 'green';
-        ctx.fillRect(0, canvas.height, canvas.width, 50); // Base ground layer
+        ctx.fillRect(0, canvas.height -50, canvas.width, 50); // Base ground layer
         ctx.save();
-   // פה פה!!    ctx.translate(groundOffset, 0);
+        ctx.translate(groundOffset, 0);
         ctx.fillStyle = 'brown';
         for (let i = 0; i < canvas.width / 20; i++) {
             ctx.fillRect(i * 20, canvas.height - 50, 10, 50); // Draw repeating ground pattern
