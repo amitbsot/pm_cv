@@ -10,7 +10,7 @@
             padding: 0;
             overflow: hidden;
             background-color: lightblue;
-            font-family: 'Press Start 2P', cursive; /* מרמז לעיצוב פיקסלים רטרו */
+            font-family: 'Press Start 2P', cursive;
         }
         canvas {
             display: block;
@@ -44,12 +44,13 @@
     canvas.height = window.innerHeight - 50; // Subtract ground height
 
     const X = 50; // Character's height and obstacle dimensions
-    const gravity = 0.5;
+    const gravity = 0.2;
     const jumpHeight = 3 * X;
     let score = 0;
     let obstacles = [];
     let frameCount = 0;
     let isGameOver = false;
+    let startTouchY = 0; // Y position of the touch start
 
     // Main character object
     const yon = {
@@ -114,12 +115,18 @@
         }
     }
 
-    // Handle input for jumping and crouching
+    // Handle touch input
     window.addEventListener('touchstart', (e) => {
+        startTouchY = e.touches[0].clientY;
+    });
+
+    window.addEventListener('touchmove', (e) => {
         const touchY = e.touches[0].clientY;
-        if (touchY < window.innerHeight / 2) {
+        const deltaY = touchY - startTouchY;
+
+        if (deltaY < -30) {  // Swipe up
             yon.jump();
-        } else {
+        } else if (deltaY > 30) {  // Swipe down
             yon.crouch();
         }
     });
