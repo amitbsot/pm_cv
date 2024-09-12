@@ -125,6 +125,7 @@
             this.x = canvas.width;
             this.width = X;
             if (fromTop) {
+               this.height = X / 2;
                this.y = canvas.height - X / 2;
            } else {
                 if (type === 'rock') {
@@ -185,7 +186,7 @@
 
     // Generate obstacles
     function generateObstacle() {
-        const timePassed = (Date.now() - startTime) / 1000;
+        const timePassed = (Date.now() - startTime) / 10000;
         const type = Math.random() > 0.5 ? 'rock' : 'hedgehog';
 
         // After 60 seconds, add double obstacles
