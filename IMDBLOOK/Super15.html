@@ -60,8 +60,8 @@
     canvas.height = window.innerHeight - 50; // Subtract ground height
 
     const X = 50; // Character's height and obstacle dimensions
-    const gravity = 0.8;
-    const jumpHeight = 15;
+    const gravity = 1;
+    const jumpHeight = 10;
     let score = 0;
     let obstacles = [];
     let frameCount = 0;
@@ -145,9 +145,9 @@
             groundOffset = 0;
         }
         ctx.fillStyle = 'green';
-        ctx.fillRect(0, canvas.height - 50, canvas.width, 50); // Base ground layer
+        ctx.fillRect(0, canvas.height, canvas.width, 50); // Base ground layer
         ctx.save();
-        ctx.translate(groundOffset, 0);
+   // פה פה!!    ctx.translate(groundOffset, 0);
         ctx.fillStyle = 'brown';
         for (let i = 0; i < canvas.width / 20; i++) {
             ctx.fillRect(i * 20, canvas.height - 50, 10, 50); // Draw repeating ground pattern
