@@ -25,10 +25,11 @@
             background-color: green;
             background-image: repeating-linear-gradient(90deg, brown 0px, brown 10px, green 10px, green 20px);
         }
-        #startButton, #restartButton, #resumeButton {
+        #restartButton {
             display: none;
             position: absolute;
             left: 50%;
+            top: 60%;
             transform: translate(-50%, -50%);
             padding: 10px 20px;
             font-size: 20px;
@@ -38,74 +39,23 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        #startButton {
-            top: 50%;
-            display: block; /* מוצג כברירת מחדל */
-        }
-        #restartButton {
-            top: 60%;
-        }
-        #resumeButton {
-            top: 50%;
-            display: none;
-            color: black;
-            background-color: lightgreen;
-        }
-        #pauseButton {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
-            background-color: gray;
-            color: black;
-            border: none;
-            font-size: 24px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        #overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.1); /* שקיפות של 10% */
-            display: none;
-            justify-content: center;
-            align-items: center;
-        }
     </style>
 </head>
 <body>
 <canvas id="gameCanvas"></canvas>
 <div class="ground" id="ground"></div>
-
-<!-- כפתורים -->
-<button id="startButton">התחל</button>
 <button id="restartButton">התחל מחדש</button>
-<button id="pauseButton">||</button>
-
-<!-- שכבת הפסקה -->
-<div id="overlay">
-    <button id="resumeButton">המשך</button>
-</div>
 
 <script>
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
-    const startButton = document.getElementById('startButton');
     const restartButton = document.getElementById('restartButton');
-    const pauseButton = document.getElementById('pauseButton');
-    const resumeButton = document.getElementById('resumeButton');
-    const overlay = document.getElementById('overlay');
     const ground = document.getElementById('ground');
 
-    // קביעת גודל הקנבס
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight - 50; 
 
-    const X = 50; 
+    const X = 50;
     const gravity = 0.9;
     const jumpHeight = 15;
     let score = 0;
@@ -113,12 +63,12 @@
     let obstacles = [];
     let frameCount = 0;
     let isGameOver = false;
-    let isPaused = false;
+    let startTouchY = 0;
     let obstacleSpeed = 5;
+    let speedIncrementInterval = 10000;
     let lastSpeedIncreaseTime = 0;
-    let lastGapReductionTime = 0;
-    let gameInterval;
-    let obstacleGap = 100; // רווח התחלתי בין המכשולים
+    let groundOffset = 0;
+    let pipeAvailable = false; // יוגדר כ-true אחרי חצי דקה
 
     const yon = {
         x: 100,
@@ -127,11 +77,22 @@
         height: X,
         dy: 0,
         isJumping: false,
+        isCrouching: false,
         jump() {
-            if (!this.isJumping) {
+            if (!this.isJumping && !this.isCrouching) {
                 this.dy = -jumpHeight;
                 this.isJumping = true;
             }
+        },
+        crouch() {
+            this.isCrouching = true;
+            this.height = X / 2;
+            this.y = canvas.height - this.height;
+        },
+        standUp() {
+            this.isCrouching = false;
+            this.height = X;
+            this.y = canvas.height - this.height;
         },
         update() {
             this.y += this.dy;
@@ -149,75 +110,148 @@
         }
     };
 
-    // פונקציות הפעלת המשחק
-    function startGame() {
-        startButton.style.display = 'none';
-        isGameOver = false;
-        score = 0;
-        frameCount = 0;
-        obstacles = [];
-        obstacleSpeed = 5;
-        lastSpeedIncreaseTime = 0;
-        gameInterval = requestAnimationFrame(update);
+    class Obstacle {
+        constructor(type) {
+            this.type = type;
+            this.x = canvas.width;
+            this.width = X;
+            this.height = type === 'rock' ? X / 2 : type === 'pipe' ? canvas.height - X / 2 : X / 2;
+            this.y = type === 'rock' ? Math.random() > 0.5 ? canvas.height - X / 2 : canvas.height - X :
+                     type === 'pipe' ? 0 : canvas.height - this.height;
+            this.speed = obstacleSpeed;
+        }
+        update() {
+            this.x -= this.speed;
+        }
+        draw() {
+            if (this.type === 'rock') {
+                ctx.fillStyle = 'gray';
+            } else if (this.type === 'hedgehog') {
+                ctx.fillStyle = 'brown';
+            } else if (this.type === 'pipe') {
+                ctx.fillStyle = 'rgb(150, 75, 0)'; // צבע חלודה
+                this.height = canvas.height - X / 2;
+            }
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+        }
     }
+
+    window.addEventListener('touchstart', (e) => {
+        startTouchY = e.touches[0].clientY;
+    });
+
+    window.addEventListener('touchmove', (e) => {
+        const touchY = e.touches[0].clientY;
+        const deltaY = touchY - startTouchY;
+
+        if (deltaY < -30) {  
+            yon.jump();
+        } else if (deltaY > 30) {  
+            yon.crouch();
+        }
+    });
+
+    window.addEventListener('touchend', () => {
+        yon.standUp();
+    });
 
     function resetGame() {
         isGameOver = false;
         score = 0;
+        frameCount = 0;
         obstacles = [];
+        obstacleSpeed = 5; 
+        lastSpeedIncreaseTime = 0;
         yon.y = canvas.height - yon.height;
+        pipeAvailable = false; // איפוס כך שלא יופיע צינור מיידי
         restartButton.style.display = 'none';
-        overlay.style.display = 'none';
-        gameInterval = requestAnimationFrame(update);
+        update();
     }
 
-    // פונקציה להשהייה וחזרה מהשהייה
-    function pauseGame() {
-        isPaused = true;
-        overlay.style.display = 'flex';
-        cancelAnimationFrame(gameInterval);
+    restartButton.addEventListener('click', resetGame);
+
+    function generateObstacle() {
+        let type = Math.random() > 0.5 ? 'rock' : 'hedgehog';
+
+        if (pipeAvailable && Math.random() < 0.3) { // צינור יופיע אם עברו 30 שניות ובסיכוי של 30%
+            type = 'pipe';
+        }
+
+        obstacles.push(new Obstacle(type));
     }
 
-    function resumeGame() {
-        isPaused = false;
-        overlay.style.display = 'none';
-        gameInterval = requestAnimationFrame(update);
-    }
-
-    // עדכון נקודות
     function updateScore() {
         score++;
-        if (score > highScore) {
-            highScore = score;
-        }
         ctx.fillStyle = 'black';
         ctx.font = '24px Arial';
         ctx.fillText(`Score: ${score}`, 20, 40);
         ctx.fillText(`High Score: ${highScore}`, 20, 80);
     }
 
-    // כפתור התחלה מחדש
-    restartButton.addEventListener('click', resetGame);
-    startButton.addEventListener('click', startGame);
-    pauseButton.addEventListener('click', pauseGame);
-    resumeButton.addEventListener('click', resumeGame);
-
-    // לולאת העדכון הראשית
-    function update() {
-        if (isGameOver || isPaused) return;
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        yon.update();
-        yon.draw();
-        updateScore();
-
-        // טיפול בתנועה ובמכשולים (יכול לכלול טיפול ברווח בין מכשולים)
-        frameCount++;
-        gameInterval = requestAnimationFrame(update);
+    function checkCollision() {
+        for (let i = 0; i < obstacles.length; i++) {
+            const obs = obstacles[i];
+            if (yon.x < obs.x + obs.width &&
+                yon.x + yon.width > obs.x &&
+                yon.y < obs.y + obs.height &&
+                yon.y + yon.height > obs.y) {
+                isGameOver = true;
+                if (score > highScore) {
+                    highScore = score;
+                }
+            }
+        }
     }
 
-    // התחל את המשחק
-    startGame();
+    function moveGround() {
+        groundOffset -= obstacleSpeed;
+        ground.style.transform = `translateX(${groundOffset % (canvas.width / 2)}px)`;
+    }
+
+    function update() {
+        if (isGameOver) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'red';
+            ctx.font = '48px Arial';
+            ctx.fillText('Game Over', canvas.width / 2 - 100, canvas.height / 2);
+
+            restartButton.style.display = 'block';
+            return;
+        }
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        yon.update();
+        yon.draw();
+
+        const currentTime = performance.now();
+        if (currentTime - lastSpeedIncreaseTime > speedIncrementInterval) {
+            obstacleSpeed += 0.5;
+            lastSpeedIncreaseTime = currentTime;
+        }
+
+        if (frameCount % 90 === 1) {
+            generateObstacle();
+        }
+
+        if (currentTime >= 30000) { // אחרי חצי דקה הצינור הופך לאפשרי
+            pipeAvailable = true;
+        }
+
+        for (let i = 0; i < obstacles.length; i++) {
+            obstacles[i].update();
+            obstacles[i].draw();
+        }
+
+        checkCollision();
+        updateScore();
+        moveGround();
+
+        frameCount++;
+        requestAnimationFrame(update);
+    }
+
+    update();
 </script>
 </body>
 </html>
