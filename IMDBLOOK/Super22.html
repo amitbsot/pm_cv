@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Run, Yon!</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: lightblue;
+            font-family: 'Press Start 2P', cursive;
+        }
+        canvas {
+            display: block;
+            background-color: lightblue;
+            border-bottom: 5px solid green;
+        }
+        .ground {
+            position: absolute;
+            bottom: 0;
+            width: 200%;
+            height: 50px;
+            background-color: green;
+            background-image: repeating-linear-gradient(90deg, brown 0px, brown 10px, green 10px, green 20px);
+        }
+        #restartButton {
+            display: none;
+            position: absolute;
+            left: 50%;
+            top: 60%;
+            transform: translate(-50%, -50%);
+            padding: 10px 20px;
+            font-size: 20px;
+            color: white;
+            background-color: green;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        @font-face {
+            font-family: 'Press Start 2P';
+            src: url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        }
+    </style>
+</head>
+<body>
+<canvas id="gameCanvas"></canvas>
+<div class="ground" id="ground"></div>
+<button id="restartButton">התחל מחדש</button>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const restartButton = document.getElementById('restartButton');
+    const ground = document.getElementById('ground');
+
+    // Set canvas dimensions
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight - 50; // Subtract ground height
+
+    const X = 50; // Character's height and obstacle dimensions
+    const gravity = 0.9;
+    const jumpHeight = 15;
+    let score = 0
