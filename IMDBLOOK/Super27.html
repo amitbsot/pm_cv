@@ -117,7 +117,7 @@
             this.width = X;
             this.height = type === 'rock' ? X / 2 : type === 'pipe' ? X / 2 : X / 2;
             this.y = type === 'rock' ? Math.random() > 0.5 ? canvas.height - X / 2 : canvas.height - X :
-                     type === 'pipe' ? 0 : canvas.height - this.height;
+                     type === 'pipe' ? 0 : canvas.height - X / 2;
             this.speed = obstacleSpeed;
         }
         update() {
