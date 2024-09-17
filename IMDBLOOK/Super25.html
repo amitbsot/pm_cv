@@ -20,7 +20,7 @@
         .ground {
             position: absolute;
             bottom: 0;
-            width: 200%; /* הרחבנו את רוחב הקרקע לתנועה רציפה */
+            width: 200%; /* הרחבנו את הקרקע כדי ליצור תנועה */
             height: 50px;
             background-color: green;
             background-image: repeating-linear-gradient(90deg, brown 0px, brown 10px, green 10px, green 20px);
@@ -39,10 +39,6 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        @font-face {
-            font-family: 'Press Start 2P';
-            src: url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-        }
     </style>
 </head>
 <body>
@@ -56,11 +52,10 @@
     const restartButton = document.getElementById('restartButton');
     const ground = document.getElementById('ground');
 
-    // Set canvas dimensions
     canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight - 50; // Subtract ground height
+    canvas.height = window.innerHeight - 50; 
 
-    const X = 50; // Character's height and obstacle dimensions
+    const X = 50; 
     const gravity = 0.9;
     const jumpHeight = 15;
     let score = 0;
@@ -68,13 +63,12 @@
     let obstacles = [];
     let frameCount = 0;
     let isGameOver = false;
-    let startTouchY = 0; // Y position of the touch start
-    let obstacleSpeed = 5; // Starting speed of obstacles
-    let speedIncrementInterval = 10000; // 10 seconds
-    let lastSpeedIncreaseTime = 0; // Last time the speed increased
-    let groundOffset = 0; // Ground offset for animation
+    let startTouchY = 0;
+    let obstacleSpeed = 5;
+    let speedIncrementInterval = 10000;
+    let lastSpeedIncreaseTime = 0;
+    let groundOffset = 0;
 
-    // Main character object
     const yon = {
         x: 100,
         y: canvas.height - X,
@@ -92,12 +86,12 @@
         crouch() {
             this.isCrouching = true;
             this.height = X / 2;
-            this.y = canvas.height - this.height; // Adjust Y based on new height
+            this.y = canvas.height - this.height;
         },
         standUp() {
             this.isCrouching = false;
             this.height = X;
-            this.y = canvas.height - this.height; // Reset Y based on height
+            this.y = canvas.height - this.height;
         },
         update() {
             this.y += this.dy;
@@ -115,7 +109,6 @@
         }
     };
 
-    // Obstacle class
     class Obstacle {
         constructor(type) {
             this.type = type;
@@ -134,7 +127,6 @@
         }
     }
 
-    // Handle touch input
     window.addEventListener('touchstart', (e) => {
         startTouchY = e.touches[0].clientY;
     });
@@ -143,9 +135,9 @@
         const touchY = e.touches[0].clientY;
         const deltaY = touchY - startTouchY;
 
-        if (deltaY < -30) {  // Swipe up
+        if (deltaY < -30) {  
             yon.jump();
-        } else if (deltaY > 30) {  // Swipe down
+        } else if (deltaY > 30) {  
             yon.crouch();
         }
     });
@@ -154,17 +146,16 @@
         yon.standUp();
     });
 
-    // Reset game
     function resetGame() {
         isGameOver = false;
         score = 0;
         frameCount = 0;
         obstacles = [];
-        obstacleSpeed = 5; // Reset speed
+        obstacleSpeed = 5; 
         lastSpeedIncreaseTime = 0;
         yon.y = canvas.height - yon.height;
         restartButton.style.display = 'none';
-        update(); // Restart game loop
+        update();
     }
 
     restartButton.addEventListener('click', resetGame);
@@ -185,3 +176,63 @@
     function checkCollision() {
         for (let i = 0; i < obstacles.length; i++) {
             const obs = obstacles[i];
+            if (yon.x < obs.x + obs.width &&
+                yon.x + yon.width > obs.x &&
+                yon.y < obs.y + obs.height &&
+                yon.y + yon.height > obs.y) {
+                isGameOver = true;
+                if (score > highScore) {
+                    highScore = score;
+                }
+            }
+        }
+    }
+
+    function moveGround() {
+        groundOffset -= obstacleSpeed;
+        ground.style.transform = `translateX(${groundOffset % (canvas.width / 2)}px)`;
+    }
+
+    function update() {
+        if (isGameOver) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'red';
+            ctx.font = '48px Arial';
+            ctx.fillText('Game Over', canvas.width / 2 - 100, canvas.height / 2);
+
+            restartButton.style.display = 'block';
+            return;
+        }
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        yon.update();
+        yon.draw();
+
+        const currentTime = performance.now();
+        if (currentTime - lastSpeedIncreaseTime > speedIncrementInterval) {
+            obstacleSpeed += 0.2;
+            lastSpeedIncreaseTime = currentTime;
+        }
+
+        if (frameCount % 100 === 0) {
+            generateObstacle();
+        }
+
+        for (let i = 0; i < obstacles.length; i++) {
+            obstacles[i].update();
+            obstacles[i].draw();
+        }
+
+        checkCollision();
+        updateScore();
+        moveGround();  // Move the ground to create the illusion of movement
+
+        frameCount++;
+        requestAnimationFrame(update);
+    }
+
+    update();
+</script>
+</body>
+</html>
