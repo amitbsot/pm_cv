@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Run, Yon!</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: lightblue;
+            font-family: 'Press Start 2P', cursive;
+        }
+        canvas {
+            display: block;
+            background-color: lightblue;
+            border-bottom: 5px solid green;
+        }
+        .ground {
+            position: absolute;
+            bottom: 0;
+            width: 200%;
+            height: 50px;
+            background-color: green;
+            background-image: repeating-linear-gradient(90deg, brown 0px, brown 10px, green 10px, green 20px);
+        }
+        #startButton, #restartButton, #resumeButton {
+            display: none;
+            position: absolute;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 10px 20px;
+            font-size: 20px;
+            color: white;
+            background-color: green;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #startButton {
+            top: 50%;
+            display: block; /* מוצג כברירת מחדל */
+        }
+        #restartButton {
+            top: 60%;
+        }
+        #resumeButton {
+            top: 50%;
+            display: none;
+            color: black;
+            background-color: lightgreen;
+        }
+        #pauseButton {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background-color: gray;
+            color: black;
+            border: none;
+            font-size: 24px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.1); /* שקיפות של 10% */
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+<canvas id="gameCanvas"></canvas>
+<div class="ground" id="ground"></div>
+
+<!-- כפתורים -->
+<button id="startButton">התחל</button>
+<button id="restartButton">התחל מחדש</button>
+<button id="pauseButton">||</button>
+
+<!-- שכבת הפסקה -->
+<div id="overlay">
+    <button id="resumeButton">המשך</button>
+</div>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const startButton = document.getElementById('startButton');
+    const restartButton = document.getElementById('restartButton');
+    const pauseButton = document.getElementById('pauseButton');
+    const resumeButton = document.getElementById('resumeButton');
+    const overlay = document.getElementById('overlay');
+    const ground = document.getElementById('ground');
+
+    // קביעת גודל הקנבס
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight - 50; 
+
+    const X = 50; 
+    const gravity = 0.9;
+    const jumpHeight = 15;
+    let score = 0;
+    let highScore = 0;
+    let obstacles = [];
+    let frameCount = 0;
+    let isGameOver = false;
+    let isPaused = false;
+    let obstacleSpeed = 5;
+    let lastSpeedIncreaseTime = 0;
+    let lastGapReductionTime = 0;
+    let gameInterval;
+    let obstacleGap = 100; // רווח התחלתי בין המכשולים
+
+    const yon = {
+        x: 100,
+        y: canvas.height - X,
+        width: X,
+        height: X,
+        dy: 0,
+        isJumping: false,
+        jump() {
+            if (!this.isJumping) {
+                this.dy = -jumpHeight;
+                this.isJumping = true;
+            }
+        },
+        update() {
+            this.y += this.dy;
+            if (this.y + this.height < canvas.height) {
+                this.dy += gravity;
+            } else {
+                this.dy = 0;
+                this.isJumping = false;
+                this.y = canvas.height - this.height;
+            }
+        },
+        draw() {
+            ctx.fillStyle = 'blue';
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+        }
+    };
+
+    // פונקציות הפעלת המשחק
+    function startGame() {
+        startButton.style.display = 'none';
+        isGameOver = false;
+        score = 0;
+        frameCount = 0;
+        obstacles = [];
+        obstacleSpeed = 5;
+        lastSpeedIncreaseTime = 0;
+        gameInterval = requestAnimationFrame(update);
+    }
+
+    function resetGame() {
+        isGameOver = false;
+        score = 0;
+        obstacles = [];
+        yon.y = canvas.height - yon.height;
+        restartButton.style.display = 'none';
+        overlay.style.display = 'none';
+        gameInterval = requestAnimationFrame(update);
+    }
+
+    // פונקציה להשהייה וחזרה מהשהייה
+    function pauseGame() {
+        isPaused = true;
+        overlay.style.display = 'flex';
+        cancelAnimationFrame(gameInterval);
+    }
+
+    function resumeGame() {
+        isPaused = false;
+        overlay.style.display = 'none';
+        gameInterval = requestAnimationFrame(update);
+    }
+
+    // עדכון נקודות
+    function updateScore() {
+        score++;
+        if (score > highScore) {
+            highScore = score;
+        }
+        ctx.fillStyle = 'black';
+        ctx.font = '24px Arial';
+        ctx.fillText(`Score: ${score}`, 20, 40);
+        ctx.fillText(`High Score: ${highScore}`, 20, 80);
+    }
+
+    // כפתור התחלה מחדש
+    restartButton.addEventListener('click', resetGame);
+    startButton.addEventListener('click', startGame);
+    pauseButton.addEventListener('click', pauseGame);
+    resumeButton.addEventListener('click', resumeGame);
+
+    // לולאת העדכון הראשית
+    function update() {
+        if (isGameOver || isPaused) return;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        yon.update();
+        yon.draw();
+        updateScore();
+
+        // טיפול בתנועה ובמכשולים (יכול לכלול טיפול ברווח בין מכשולים)
+        frameCount++;
+        gameInterval = requestAnimationFrame(update);
+    }
+
+    // התחל את המשחק
+    startGame();
+</script>
+</body>
+</html>
