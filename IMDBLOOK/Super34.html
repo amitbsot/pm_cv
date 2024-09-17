@@ -25,11 +25,10 @@
             background-color: green;
             background-image: repeating-linear-gradient(90deg, brown 0px, brown 10px, green 10px, green 20px);
         }
-        #restartButton {
+        #restartButton, #startButton, #pauseButton, #resumeButton {
             display: none;
             position: absolute;
             left: 50%;
-            top: 60%;
             transform: translate(-50%, -50%);
             padding: 10px 20px;
             font-size: 20px;
@@ -39,21 +38,40 @@
             border-radius: 5px;
             cursor: pointer;
         }
+        #startButton {
+            top: 50%;
+        }
+        #restartButton {
+            top: 60%;
+        }
+        #pauseButton, #resumeButton {
+            display: inline-block;
+            right: 10px;
+            top: 10px;
+            background-color: gray;
+        }
     </style>
 </head>
 <body>
 <canvas id="gameCanvas"></canvas>
 <div class="ground" id="ground"></div>
+<button id="startButton">רוץ</button>
 <button id="restartButton">התחל מחדש</button>
-
+<button id="pauseButton">השהייה</button>
+<button id="resumeButton">חזרה למשחק</button>
 <script>
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
+    const startButton = document.getElementById('startButton');
     const restartButton = document.getElementById('restartButton');
+    const pauseButton = document.getElementById('pauseButton');
+    const resumeButton = document.getElementById('resumeButton');
     const ground = document.getElementById('ground');
 
+    let isPaused = false;
+
     canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight - 50; 
+    canvas.height = window.innerHeight - 50;
 
     const X = 50;
     const gravity = 0.9;
@@ -68,7 +86,7 @@
     let speedIncrementInterval = 10000;
     let lastSpeedIncreaseTime = 0;
     let groundOffset = 0;
-    let pipeAvailable = false; // יוגדר כ-true אחרי חצי דקה
+    let pipeAvailable = false;
 
     const yon = {
         x: 100,
@@ -95,13 +113,15 @@
             this.y = canvas.height - this.height;
         },
         update() {
-            this.y += this.dy;
-            if (this.y + this.height < canvas.height) {
-                this.dy += gravity;
-            } else {
-                this.dy = 0;
-                this.isJumping = false;
-                this.y = canvas.height - this.height;
+            if (!isPaused) {
+                this.y += this.dy;
+                if (this.y + this.height < canvas.height) {
+                    this.dy += gravity;
+                } else {
+                    this.dy = 0;
+                    this.isJumping = false;
+                    this.y = canvas.height - this.height;
+                }
             }
         },
         draw() {
@@ -121,7 +141,9 @@
             this.speed = obstacleSpeed;
         }
         update() {
-            this.x -= this.speed;
+            if (!isPaused) {
+                this.x -= this.speed;
+            }
         }
         draw() {
             if (this.type === 'rock') {
@@ -129,7 +151,7 @@
             } else if (this.type === 'hedgehog') {
                 ctx.fillStyle = 'brown';
             } else if (this.type === 'pipe') {
-                ctx.fillStyle = 'rgb(150, 75, 0)'; // צבע חלודה
+                ctx.fillStyle = 'rgb(150, 75, 0)';
                 this.height = canvas.height - X / 2;
             }
             ctx.fillRect(this.x, this.y, this.width, this.height);
@@ -141,18 +163,22 @@
     });
 
     window.addEventListener('touchmove', (e) => {
-        const touchY = e.touches[0].clientY;
-        const deltaY = touchY - startTouchY;
+        if (!isPaused) {
+            const touchY = e.touches[0].clientY;
+            const deltaY = touchY - startTouchY;
 
-        if (deltaY < -30) {  
-            yon.jump();
-        } else if (deltaY > 30) {  
-            yon.crouch();
+            if (deltaY < -30) {  
+                yon.jump();
+            } else if (deltaY > 30) {  
+                yon.crouch();
+            }
         }
     });
 
     window.addEventListener('touchend', () => {
-        yon.standUp();
+        if (!isPaused) {
+            yon.standUp();
+        }
     });
 
     function resetGame() {
@@ -160,20 +186,42 @@
         score = 0;
         frameCount = 0;
         obstacles = [];
-        obstacleSpeed = 5; 
+        obstacleSpeed = 5;
         lastSpeedIncreaseTime = 0;
         yon.y = canvas.height - yon.height;
-        pipeAvailable = false; // איפוס כך שלא יופיע צינור מיידי
+        pipeAvailable = false;
         restartButton.style.display = 'none';
+        pauseButton.style.display = 'block';
         update();
     }
 
+    function startGame() {
+        startButton.style.display = 'none';
+        restartButton.style.display = 'none';
+        pauseButton.style.display = 'block';
+        resetGame();
+    }
+
+    startButton.addEventListener('click', startGame);
     restartButton.addEventListener('click', resetGame);
+
+    pauseButton.addEventListener('click', () => {
+        isPaused = true;
+        pauseButton.style.display = 'none';
+        resumeButton.style.display = 'block';
+    });
+
+    resumeButton.addEventListener('click', () => {
+        isPaused = false;
+        resumeButton.style.display = 'none';
+        pauseButton.style.display = 'block';
+        update();
+    });
 
     function generateObstacle() {
         let type = Math.random() > 0.5 ? 'rock' : 'hedgehog';
 
-        if (pipeAvailable && Math.random() < 0.3) { // צינור יופיע אם עברו 30 שניות ובסיכוי של 30%
+        if (pipeAvailable && Math.random() < 0.3) {
             type = 'pipe';
         }
 
@@ -181,11 +229,13 @@
     }
 
     function updateScore() {
-        score++;
-        ctx.fillStyle = 'black';
-        ctx.font = '24px Arial';
-        ctx.fillText(`Score: ${score}`, 20, 40);
-        ctx.fillText(`High Score: ${highScore}`, 20, 80);
+        if (!isPaused) {
+            score++;
+            ctx.fillStyle = 'black';
+            ctx.font = '24px Arial';
+            ctx.fillText(`Score: ${score}`, 20, 40);
+            ctx.fillText(`High Score: ${highScore}`, 20, 80);
+        }
     }
 
     function checkCollision() {
@@ -199,13 +249,17 @@
                 if (score > highScore) {
                     highScore = score;
                 }
+                restartButton.style.display = 'block';
+                pauseButton.style.display = 'none';
             }
         }
     }
 
     function moveGround() {
-        groundOffset -= obstacleSpeed;
-        ground.style.transform = `translateX(${groundOffset % (canvas.width / 2)}px)`;
+        if (!isPaused) {
+            groundOffset -= obstacleSpeed;
+            ground.style.transform = `translateX(${groundOffset % (canvas.width / 2)}px)`;
+        }
     }
 
     function update() {
@@ -214,8 +268,6 @@
             ctx.fillStyle = 'red';
             ctx.font = '48px Arial';
             ctx.fillText('Game Over', canvas.width / 2 - 100, canvas.height / 2);
-
-            restartButton.style.display = 'block';
             return;
         }
 
@@ -234,7 +286,7 @@
             generateObstacle();
         }
 
-        if (currentTime >= 30000) { // אחרי חצי דקה הצינור הופך לאפשרי
+        if (currentTime >= 30000) {
             pipeAvailable = true;
         }
 
@@ -248,7 +300,9 @@
         moveGround();
 
         frameCount++;
-        requestAnimationFrame(update);
+        if (!isPaused) {
+            requestAnimationFrame(update);
+        }
     }
 
     update();
