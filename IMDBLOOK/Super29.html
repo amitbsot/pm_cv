@@ -20,7 +20,7 @@
         .ground {
             position: absolute;
             bottom: 0;
-            width: 200%; /* הרחבנו את הקרקע כדי ליצור תנועה */
+            width: 200%;
             height: 50px;
             background-color: green;
             background-image: repeating-linear-gradient(90deg, brown 0px, brown 10px, green 10px, green 20px);
@@ -55,7 +55,7 @@
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight - 50; 
 
-    const X = 50; 
+    const X = 50;
     const gravity = 0.9;
     const jumpHeight = 15;
     let score = 0;
@@ -68,7 +68,7 @@
     let speedIncrementInterval = 10000;
     let lastSpeedIncreaseTime = 0;
     let groundOffset = 0;
-    let pipeAdded = false; // כדי לוודא שהצינור נוסף רק פעם אחת אחרי חצי דקה
+    let pipeAvailable = false; // יוגדר כ-true אחרי חצי דקה
 
     const yon = {
         x: 100,
@@ -115,9 +115,9 @@
             this.type = type;
             this.x = canvas.width;
             this.width = X;
-            this.height = type === 'rock' ? X / 2;
+            this.height = type === 'rock' ? X / 2 : type === 'pipe' ? canvas.height - X / 2 : X / 2;
             this.y = type === 'rock' ? Math.random() > 0.5 ? canvas.height - X / 2 : canvas.height - X :
-                     type === 'pipe' ? 0 : canvas.height - X / 2;
+                     type === 'pipe' ? 0 : canvas.height - this.height;
             this.speed = obstacleSpeed;
         }
         update() {
@@ -163,7 +163,7 @@
         obstacleSpeed = 5; 
         lastSpeedIncreaseTime = 0;
         yon.y = canvas.height - yon.height;
-        pipeAdded = false; // איפוס כדי לאפשר צינור חדש במשחק הבא
+        pipeAvailable = false; // איפוס כך שלא יופיע צינור מיידי
         restartButton.style.display = 'none';
         update();
     }
@@ -171,15 +171,13 @@
     restartButton.addEventListener('click', resetGame);
 
     function generateObstacle() {
-        const type = Math.random() > 0.5 ? 'rock' : 'hedgehog';
-        obstacles.push(new Obstacle(type));
-    }
+        let type = Math.random() > 0.5 ? 'rock' : 'hedgehog';
 
-    function addPipeObstacle() {
-        if (!pipeAdded && performance.now() >= 30000) { // אחרי חצי דקה של משחק
-            obstacles.push(new Obstacle('pipe'));
-            pipeAdded = true;
+        if (pipeAvailable && Math.random() < 0.3) { // צינור יופיע אם עברו 30 שניות ובסיכוי של 30%
+            type = 'pipe';
         }
+        
+        obstacles.push(new Obstacle(type));
     }
 
     function updateScore() {
@@ -236,7 +234,9 @@
             generateObstacle();
         }
 
-        addPipeObstacle(); // הוספת הצינור אחרי חצי דקה
+        if (currentTime >= 30000) { // אחרי חצי דקה הצינור הופך לאפשרי
+            pipeAvailable = true;
+        }
 
         for (let i = 0; i < obstacles.length; i++) {
             obstacles[i].update();
