@@ -68,6 +68,7 @@
     let speedIncrementInterval = 10000;
     let lastSpeedIncreaseTime = 0;
     let groundOffset = 0;
+    let pipeAdded = false; // כדי לוודא שהצינור נוסף רק פעם אחת אחרי חצי דקה
 
     const yon = {
         x: 100,
@@ -114,15 +115,23 @@
             this.type = type;
             this.x = canvas.width;
             this.width = X;
-            this.height = type === 'rock' ? X / 2 : X / 2;
-            this.y = type === 'rock' ? Math.random() > 0.5 ? canvas.height - X / 2 : canvas.height - X : canvas.height - this.height;
+            this.height = type === 'rock' ? X / 2 : type === 'pipe' ? X / 2 : X / 2;
+            this.y = type === 'rock' ? Math.random() > 0.5 ? canvas.height - X / 2 : canvas.height - X :
+                     type === 'pipe' ? 0 : canvas.height - this.height;
             this.speed = obstacleSpeed;
         }
         update() {
             this.x -= this.speed;
         }
         draw() {
-            ctx.fillStyle = this.type === 'rock' ? 'gray' : 'brown';
+            if (this.type === 'rock') {
+                ctx.fillStyle = 'gray';
+            } else if (this.type === 'hedgehog') {
+                ctx.fillStyle = 'brown';
+            } else if (this.type === 'pipe') {
+                ctx.fillStyle = 'rgb(150, 75, 0)'; // צבע חלודה
+                this.height = X / 2;
+            }
             ctx.fillRect(this.x, this.y, this.width, this.height);
         }
     }
@@ -154,6 +163,7 @@
         obstacleSpeed = 5; 
         lastSpeedIncreaseTime = 0;
         yon.y = canvas.height - yon.height;
+        pipeAdded = false; // איפוס כדי לאפשר צינור חדש במשחק הבא
         restartButton.style.display = 'none';
         update();
     }
@@ -163,6 +173,13 @@
     function generateObstacle() {
         const type = Math.random() > 0.5 ? 'rock' : 'hedgehog';
         obstacles.push(new Obstacle(type));
+    }
+
+    function addPipeObstacle() {
+        if (!pipeAdded && performance.now() >= 30000) { // אחרי חצי דקה של משחק
+            obstacles.push(new Obstacle('pipe'));
+            pipeAdded = true;
+        }
     }
 
     function updateScore() {
@@ -219,6 +236,8 @@
             generateObstacle();
         }
 
+        addPipeObstacle(); // הוספת הצינור אחרי חצי דקה
+
         for (let i = 0; i < obstacles.length; i++) {
             obstacles[i].update();
             obstacles[i].draw();
@@ -226,7 +245,7 @@
 
         checkCollision();
         updateScore();
-        moveGround();  // Move the ground to create the illusion of movement
+        moveGround();
 
         frameCount++;
         requestAnimationFrame(update);
