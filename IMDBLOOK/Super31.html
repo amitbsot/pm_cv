@@ -226,19 +226,14 @@
 
         const currentTime = performance.now();
         if (currentTime - lastSpeedIncreaseTime > speedIncrementInterval) {
-            obstacleSpeed += 1;
+            obstacleSpeed += 0.5;
             lastSpeedIncreaseTime = currentTime;
         }
 
-        if (frameCount % 100 === 0) {
-            generateObstacle();}
-        
-        if (currentTime >= 30000 && frameCount % 70 == 0){
-            generateObstacle();}
-                
-        if (currentTime >= 200000 && frameCount % 60 == 0){
-            generateObstacle();}
-        
+        if (frameCount % 90 === 0) {
+            generateObstacle();
+        }
+
         if (currentTime >= 30000) { // אחרי חצי דקה הצינור הופך לאפשרי
             pipeAvailable = true;
         }
