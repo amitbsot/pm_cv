@@ -152,17 +152,21 @@
     });
 
     function resetGame() {
+    isGameOver = false;
+    score = 0;              // איפוס הניקוד הנוכחי
+    frameCount = 0;
+    obstacles = [];
+    obstacleSpeed = 5;       // איפוס מהירות מכשולים
+    lastSpeedIncreaseTime = 0;
+    yon.y = canvas.height - yon.height;
+    pipeAvailable = false;   // איפוס כך שלא יופיע צינור מיידי
+    restartButton.style.display = 'none';
+    pauseButton.style.display = 'block';
+    
+    // שדה ה-High Score נשאר ולא מתאפס
+    update();
+}
 
-        isGameOver = false;
-        score = 0;
-        frameCount = 0;
-        obstacles = [];
-        obstacleSpeed = 5;
-        lastSpeedIncreaseTime = 0;
-        yon.y = canvas.height - yon.height;
-        pipeAvailable = false; // איפוס כך שלא יופיע צינור מיידי
-        restartButton.style.display = 'none';
-        update();
     }
 
     restartButton.addEventListener('click', resetGame);
