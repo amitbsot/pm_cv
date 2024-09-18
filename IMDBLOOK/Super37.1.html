@@ -150,22 +150,28 @@
     window.addEventListener('touchend', () => {
             yon.standUp();
     });
-
-    function resetGame() {
+function resetGame() {
     isGameOver = false;
-    score = 0;              // איפוס הניקוד הנוכחי
-    frameCount = 0;
-    obstacles = [];
-    obstacleSpeed = 5;       // איפוס מהירות מכשולים
-    lastSpeedIncreaseTime = 0;
+    score = 0;               // איפוס הניקוד הנוכחי
+    frameCount = 0;          // איפוס מספר הפריימים
+    obstacles = [];          // איפוס רשימת המכשולים
+    obstacleSpeed = 5;       // החזרת מהירות המכשולים להתחלה
+    lastSpeedIncreaseTime = performance.now();  // איפוס זמן העלאת המהירות
     yon.y = canvas.height - yon.height;
-    pipeAvailable = false;   // איפוס כך שלא יופיע צינור מיידי
+    yon.dy = 0;              // איפוס מהירות Y של השחקן
+    yon.isJumping = false;   // איפוס מצב קפיצה
+    yon.isCrouching = false; // איפוס מצב כיפוף
+    pipeAvailable = false;   // איפוס זמינות הצינור
+    groundOffset = 0;        // איפוס תזוזת הקרקע
+
     restartButton.style.display = 'none';
-    
+    pauseButton.style.display = 'block';
+
     // שדה ה-High Score נשאר ולא מתאפס
     update();
-    }
+}
 
+    
     restartButton.addEventListener('click', resetGame);
 
     function generateObstacle() {
