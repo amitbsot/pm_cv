@@ -148,8 +148,11 @@
     });
 
     window.addEventListener('touchend', () => {
-            yon.standUp();
-    });
+    if (yon.isCrouching) {
+        yon.standUp();  // חזרה לעמידה מתבצעת רק אם הוא בכיפוף
+    }
+});
+
 function resetGame() {
     isGameOver = false;
     score = 0;               // איפוס הניקוד הנוכחי
