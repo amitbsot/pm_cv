@@ -17,32 +17,68 @@
             background-color: lightblue;
             border-bottom: 5px solid green;
         }
-        .ground {
-            position: absolute;
-            bottom: 0;
-            width: 200%;
-            height: 50px;
-            background-color: green;
-            background-image: repeating-linear-gradient(90deg, brown 0px, brown 10px, green 10px, green 20px);
+        #startScreen {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: lightblue;
+      }
+
+    #gameTitle {
+        font-size: 48px;
+        color: darkblue; /* כחול עמוק */
+        margin-bottom: 20px;
+        text-align: center;
+        position: relative;
+        top: -20%;
+    }
+    #startButton {
+        padding: 10px 20px;
+        font-size: 20px;
+        color: white;
+        background-color: green;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+     .ground {
+        position: absolute;
+        bottom: 0;
+        width: 200%;
+        height: 50px;
+        background-color: green;
+        background-image: repeating-linear-gradient(90deg, brown 0px, brown 10px, green 10px, green 20px);
         }
-        #restartButton {
-            display: none;
-            position: absolute;
-            left: 50%;
-            top: 60%;
-            transform: translate(-50%, -50%);
-            padding: 10px 20px;
-            font-size: 20px;
-            color: white;
-            background-color: green;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+        
+     #restartButton {
+        display: none;
+        position: absolute;
+        left: 50%;
+        top: 60%;
+        transform: translate(-50%, -50%);
+        padding: 10px 20px;
+        font-size: 20px;
+        color: white; 
+        background-color: green;
+        border: none;
+        border-radius: 5px; 
+        cursor: pointer;
         }
+    
     </style>
+    
 </head>
 <body>
 <canvas id="gameCanvas"></canvas>
+<div id="startScreen">
+    <h1 id="gameTitle">Run Yon Run...</h1>
+    <button id="startButton">התחל</button>
+</div>
 <div class="ground" id="ground"></div>
 <button id="restartButton">התחל מחדש</button>
 
@@ -51,6 +87,14 @@
     const ctx = canvas.getContext('2d');
     const restartButton = document.getElementById('restartButton');
     const ground = document.getElementById('ground');
+    const startScreen = document.getElementById('startScreen');
+    const startButton = document.getElementById('startButton');
+
+// התחלת המשחק לאחר לחיצה על כפתור התחל
+    startButton.addEventListener('click', () => {
+    startScreen.style.display = 'none';  // הסתרת מסך הפתיחה
+    update();  // התחלת המשחק
+});
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight - 50;
