@@ -85,18 +85,99 @@
 <button id="restartButton">התחל מחדש</button>
 
 <script>
+let animationId; // מזהה האנימציה
+let gameStarted = false; // מציין אם המשחק התחיל
+
+// התחלת המשחק לאחר לחיצה על כפתור התחל
+startButton.addEventListener('click', () => {
+    startScreen.style.display = 'none';  // הסתרת מסך הפתיחה
+    resetGame();  // איפוס המשחק
+    startGame();  // התחלת המשחק
+});
+
+// פונקציה שמתחילה את המשחק
+function startGame() {
+    if (!gameStarted) {
+        gameStarted = true;
+        update(); // מתחילים את הלולאה הראשית של המשחק
+    }
+}
+
+// איפוס המשחק - חוץ מהניקוד הגבוה
+function resetGame() {
+    isGameOver = false;
+    score = 0;               // איפוס הניקוד הנוכחי
+    frameCount = 0;          // איפוס מספר הפריימים
+    obstacles = [];          // איפוס רשימת המכשולים
+    obstacleSpeed = 5;       // החזרת מהירות המכשולים להתחלה
+    lastSpeedIncreaseTime = performance.now();  // איפוס זמן העלאת המהירות
+    yon.y = canvas.height - yon.height;
+    yon.dy = 0;              // איפוס מהירות Y של השחקן
+    yon.isJumping = false;   // איפוס מצב קפיצה
+    yon.isCrouching = false; // איפוס מצב כיפוף
+    pipeAvailable = false;   // איפוס זמינות הצינור
+    groundOffset = 0;        // איפוס תזוזת הקרקע
+
+    restartButton.style.display = 'none';
+
+    cancelAnimationFrame(animationId); // עוצרים את האנימציה הקודמת
+    gameStarted = false;  // מחזירים את המשחק למצב לא פעיל
+}
+
+// עדכון המשחק והאנימציה
+function update() {
+    if (isGameOver) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'red';
+        ctx.font = '48px Arial';
+        ctx.fillText('Game Over', canvas.width / 2 - 100, canvas.height / 2);
+
+        restartButton.style.display = 'block';
+        return;
+    }
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    yon.update();
+    yon.draw();
+
+    const currentTime = performance.now();
+    if (currentTime - lastSpeedIncreaseTime > speedIncrementInterval) {
+        obstacleSpeed += 1.2;
+        lastSpeedIncreaseTime = currentTime;
+    }
+
+    if (frameCount % 70 === 1) {
+        generateObstacle();
+    }
+
+    if (currentTime >= 30000) { // אחרי חצי דקה הצינור הופך לאפשרי
+        pipeAvailable = true;
+    }
+
+    for (let i = 0; i < obstacles.length; i++) {
+        obstacles[i].update();
+        obstacles[i].draw();
+    }
+
+    checkCollision();
+    updateScore();
+    moveGround();
+
+    frameCount++;
+    animationId = requestAnimationFrame(update); // שמירה של מזהה האנימציה
+}
+
+// התחלת המשחק מחדש לאחר לחיצה על כפתור "התחל מחדש"
+restartButton.addEventListener('click', resetGame);
+
+    
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     const restartButton = document.getElementById('restartButton');
     const ground = document.getElementById('ground');
     const startScreen = document.getElementById('startScreen');
-    const startButton = document.getElementById('startButton');
-
-// התחלת המשחק לאחר לחיצה על כפתור התחל
-    startButton.addEventListener('click', () => {
-    startScreen.style.display = 'none';  // הסתרת מסך הפתיחה
-    update();  // התחלת המשחק
-});
+    const startButton = document.getElementById('
+                                                
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight - 50;
