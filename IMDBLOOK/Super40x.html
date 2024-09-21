@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Run, Yon!</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: lightblue;
+            font-family: 'Press Start 2P', cursive;
+        }
+        canvas {
+            display: block;
+            background-color: lightblue;
+            border-bottom: 5px solid green;
+            z-index: 1;
+        }
+        #startScreen {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: lightblue;
+            z-index: 10;
+        }
+        #gameTitle {
+            font-size: 48px;
+            color: darkblue; /* כחול עמוק */
+            margin-bottom: 20px;
+            text-align: center;
+            position: relative;
+            top: -20%;
+        }
+        #startButton {
+            padding: 10px 20px;
+            font-size: 20px;
+            color: white;
+            background-color: green;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .ground {
+            position: absolute;
+            bottom: 0;
+            width: 200%;
+            height: 50px;
+            background-color: green;
+            background-image: repeating-linear-gradient(90deg, brown 0px, brown 10px, green 10px, green 20px);
+        }
+        #restartButton {
+            display: none;
+            position: absolute;
+            left: 50%;
+            top: 60%;
+            transform: translate(-50%, -50%);
+            padding: 10px 20px;
+            font-size: 20px;
+            color: white; 
+            background-color: green;
+            border: none;
+            border-radius: 5px; 
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<canvas id="gameCanvas"></canvas>
+<div id="startScreen">
+    <h1 id="gameTitle">Run Yon Run...</h1>
+    <button id="startButton">התחל</button>
+</div>
+<div class="ground" id="ground"></div>
+<button id="restartButton">התחל מחדש</button>
+
+<script>
+let animationId; // מזהה האנימציה
+let gameStarted = false; // מציין אם המשחק התחיל
+
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const restartButton = document.getElementById('restartButton');
+const ground = document.getElementById('ground');
+const startScreen = document.getElementById('startScreen');
+const startButton = document.getElementById('startButton');
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight - 50;
+
+const X = 50;
+const gravity = 0.9;
+const jumpHeight = 15;
+let score = 0;
+let highScore = 0;
+let obstacles = [];
+let frameCount = 0;
+let isGameOver = false;
+let startTouchY = 0;
+let obstacleSpeed = 5;
+let speedIncrementInterval = 8000;
+let lastSpeedIncreaseTime = 0;
+let groundOffset = 0;
+let pipeAvailable = false; // יוגדר כ-true אחרי חצי דקה
+
+const yon = {
+    x: 100,
+    y: canvas.height - X,
+    width: X,
+    height: X,
+    dy: 0,
+    isJumping: false,
+    isCrouching: false,
+    jump() {
+        if (!this.isJumping && !this.isCrouching) {
+            this.dy = -jumpHeight;
+            this.isJumping = true;
+        }
+    },
+    crouch() {
+        this.isCrouching = true;
+        this.height = X / 2;
+        this.y = canvas.height - this.height;
+    },
+    standUp() {
+        this.isCrouching = false;
+        this.height = X;
+        this.y = canvas.height - this.height;
+    },
+    update() {
+        this.y += this.dy;
+        if (this.y + this.height < canvas.height) {
+            this.dy += gravity;
+        } else {
+            this.dy = 0;
+            this.isJumping = false;
+            this.y = canvas.height - this.height;
+        }
+    },
+    draw() {
+        ctx.fillStyle = 'blue';
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+    }
+};
+
+class Obstacle {
+    constructor(type) {
+        this.type = type;
+        this.x = canvas.width;
+        this.width = X;
+        this.height = type === 'rock' ? X / 2 : type === 'pipe' ? canvas.height - X / 2 : X / 2;
+        this.y = type === 'rock' ? Math.random() > 0.5 ? canvas.height - X / 2 : canvas.height - X :
+                 type === 'pipe' ? 0 : canvas.height - this.height;
+        this.speed = obstacleSpeed;
+    }
+    update() {
+        this.x -= this.speed;
+    }
+    draw() {
+        if (this.type === 'rock') {
+            ctx.fillStyle = 'gray';
+        } else if (this.type === 'hedgehog') {
+            ctx.fillStyle = 'brown';
+        } else if (this.type === 'pipe') {
+            ctx.fillStyle = 'rgb(150, 75, 0)'; // צבע חלודה
+            this.height = canvas.height - X / 2;
+        }
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+    }
+}
+
+window.addEventListener('touchstart', (e) => {
+    startTouchY = e.touches[0].clientY;
+});
+
+window.addEventListener('touchmove', (e) => {
+    const touchY = e.touches[0].clientY;
+    const deltaY = touchY - startTouchY;
+    if (deltaY < -30) {  
+        yon.jump();
+    } else if (deltaY > 30) {  
+        yon.crouch();
+    }
+});
+
+window.addEventListener('touchend', () => {
+    if (yon.isCrouching) {
+        yon.standUp();  // חזרה לעמידה מתבצעת רק אם הוא בכיפוף
+    }
+});
+
+// התחלת המשחק לאחר לחיצה על כפתור התחל
+startButton.addEventListener('click', () => {
+    startScreen.style.display = 'none';  // הסתרת מסך הפתיחה
+    resetGame();  // איפוס המשחק
+    startGame();  // התחלת המשחק
+});
+
+// פונקציה שמתחילה את המשחק
+function startGame() {
+    if (!gameStarted) {
+        gameStarted = true;
+        update(); // מתחילים את הלולאה הראשית של המשחק
+    }
+}
+
+// איפוס המשחק - חוץ מהניקוד הגבוה
+function resetGame() {
+    isGameOver = false;
+    score = 0;               // איפוס הניקוד הנוכחי
+    frameCount = 0;          // איפוס מספר הפריימים
+    obstacles = [];          // איפוס רשימת המכשולים
+    obstacleSpeed = 5;       // החזרת מהירות המכשולים להתחלה
+    lastSpeedIncreaseTime = performance.now();  // איפוס זמן העלאת המהירות
+    yon.y = canvas.height - yon.height;
+    yon.dy = 0;              // איפוס מהירות Y של השחקן
+    yon.isJumping = false;   // איפוס מצב קפיצה
+    yon.isCrouching = false; // איפוס מצב כיפוף
+    pipeAvailable = false;   // איפוס זמינות הצינור
+    groundOffset = 0;        // איפוס תזוזת הקרקע
+
+    restartButton.style.display = 'none';
+
+    cancelAnimationFrame(animationId); // עוצרים את האנימציה הקודמת
+    gameStarted = false;  // מחזירים את המשחק למצב לא פעיל
+}
+
+// עדכון המשחק והאנימציה
+function update() {
+    if (isGameOver) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'red';
+        ctx.font = '48px Arial';
+        ctx.fillText('Game Over', canvas.width / 2 - 100, canvas.height / 2);
+
+        restartButton.style.display = 'block';
+        return;
+    }
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    yon.update();
+    yon.draw();
+
+    const currentTime = performance.now();
+    if (currentTime - lastSpeedIncreaseTime > speedIncrementInterval) {
+        obstacleSpeed += 1.2;
+        lastSpeedIncreaseTime = currentTime;
+    }
+
+    if (frameCount % 70 === 1) {
+        generateObstacle();
+    }
+
+    if (currentTime >= 30000) { // אחרי חצי דקה הצינור הופך לאפשרי
+        pipeAvailable = true;
+    }
+
+    for (let i = 0; i < obstacles.length; i++) {
+        obstacles[i].update();
+        obstacles[i].draw();
+    }
+
+        checkCollision();
+        updateScore();
+        moveGround();
+
+        frameCount++;
+            requestAnimationFrame(update);
+        }
+
+    update();
+</script>
+</body>
+</html>
