@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basketball Game</title>
+    <style>
+        canvas {
+            display: block;
+            margin: 0 auto;
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        // Set the canvas size to fill the screen.
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Game variables
+        let gravity = 0.8;
+        let score = 0;
+
+        // Ball object
+        const ball = {
+            x: canvas.width / 2,   // Ball starts in the center at the bottom
+            y: canvas.height - 30,
+            radius: 15,            // The radius of the ball (30px diameter)
+            dx: 0,                 // X velocity (for when we move the ball)
+            dy: 0,                 // Y velocity (affected by gravity)
+            color: "orange"
+        };
+
+        // Basket object
+        const basket = {
+            x: canvas.width / 2 - 50,  // Basket's initial position, centered horizontally
+            y: canvas.height * 0.25,   // Basket is at 25% from the top
+            width: 100,                // Width of the basket
+            height: 10,                // Height of the basket (to make it thin)
+            dx: 3                      // Speed at which the basket moves
+        };
+
+        // Handle mouse/touch events for controlling the ball's movement
+        let isDragging = false;
+
+        // Mobile (touch) or Desktop (mouse) input handling
+        canvas.addEventListener("mousedown", startDragging);
+        canvas.addEventListener("mouseup", stopDragging);
+        canvas.addEventListener("mousemove", dragBall);
+
+        canvas.addEventListener("touchstart", startDragging);
+        canvas.addEventListener("touchend", stopDragging);
+        canvas.addEventListener("touchmove", dragBall);
+
+        function startDragging(e) {
+            isDragging = true;
+        }
+
+        function stopDragging(e) {
+            isDragging = false;
+        }
+
+        function dragBall(e) {
+            if (isDragging) {
+                const pointerX = e.clientX || e.touches[0].clientX;
+                const pointerY = e.clientY || e.touches[0].clientY;
+                ball.x = pointerX;
+                ball.y = pointerY;
+            }
+        }
+
+        // Main game loop
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);  // Clear the canvas for redrawing
+
+            drawBall();
+            drawBasket();
+            updateBall();
+            updateBasket();
+            checkCollision();
+
+            requestAnimationFrame(gameLoop);  // Continuously calls gameLoop for animation
+        }
+
+        // Draw the ball on the canvas
+        function drawBall() {
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);  // Create the ball as a circle
+            ctx.fillStyle = ball.color;
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        // Draw the basket on the canvas
+        function drawBasket() {
+            ctx.beginPath();
+            ctx.rect(basket.x, basket.y, basket.width, basket.height);  // Create a rectangle as the basket
+            ctx.fillStyle = "red";
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        // Update the ball's position and apply gravity
+        function updateBall() {
+            if (!isDragging) {
+                ball.dy += gravity;  // Apply gravity to the ball's vertical velocity
+                ball.y += ball.dy;   // Update ball's position by its velocity
+
+                // If the ball hits the bottom of the screen, bounce it back
+                if (ball.y + ball.radius > canvas.height) {
+                    ball.y = canvas.height - ball.radius;
+                    ball.dy = -ball.dy * 0.8;  // Reduce velocity to simulate energy loss
+                }
+
+                // If the ball hits the sides of the canvas, bounce it back
+                if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
+                    ball.dx = -ball.dx * 0.8;  // Bounce horizontally
+                }
+
+                ball.x += ball.dx;  // Apply horizontal movement
+            }
+        }
+
+        // Update the basket's movement (left to right)
+        function updateBasket() {
+            basket.x += basket.dx;  // Move the basket horizontally
+
+            // If the basket goes out of bounds, reverse its direction
+            if (basket.x + basket.width > canvas.width || basket.x < 0) {
+                basket.dx = -basket.dx;
+            }
+        }
+
+        // Check for collisions between the ball and the basket
+        function checkCollision() {
+            if (
+                ball.y - ball.radius < basket.y + basket.height &&
+                ball.x + ball.radius > basket.x &&
+                ball.x - ball.radius < basket.x + basket.width
+            ) {
+                // Ball is inside the basket
+                ball.dy = -ball.dy;  // Bounce the ball off the basket
+                score += 1;          // Add to the score
+                console.log("Score: " + score);
+            }
+        }
+
+        // Start the game loop
+        gameLoop();
+    </script>
+</body>
+</html>
