@@ -22,7 +22,7 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            display: fixed;
+            display: block;
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -80,6 +80,21 @@
 <button id="restartButton">התחל מחדש</button>
 
 <script>
+// התחלת המשחק לאחר לחיצה על כפתור התחל
+startButton.addEventListener('click', () => {
+    startScreen.style.display = 'none';  // הסתרת מסך הפתיחה
+    resetGame();  // איפוס המשחק
+    startGame();  // התחלת המשחק
+});
+
+// פונקציה שמתחילה את המשחק
+function startGame() {
+    if (!gameStarted) {
+        gameStarted = true;
+        update(); // מתחילים את הלולאה הראשית של המשחק
+    }
+},
+    
 let animationId; // מזהה האנימציה
 let gameStarted = false; // מציין אם המשחק התחיל
 
@@ -194,20 +209,7 @@ window.addEventListener('touchend', () => {
     }
 });
 
-// התחלת המשחק לאחר לחיצה על כפתור התחל
-startButton.addEventListener('click', () => {
-    startScreen.style.display = 'none';  // הסתרת מסך הפתיחה
-    resetGame();  // איפוס המשחק
-    startGame();  // התחלת המשחק
-});
 
-// פונקציה שמתחילה את המשחק
-function startGame() {
-    if (!gameStarted) {
-        gameStarted = true;
-        update(); // מתחילים את הלולאה הראשית של המשחק
-    }
-}
 
 // איפוס המשחק - חוץ מהניקוד הגבוה
 function resetGame() {
@@ -271,7 +273,6 @@ function update() {
 
         frameCount++;
             requestAnimationFrame(update);
-        }
 
     update();
 </script>
