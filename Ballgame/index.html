@@ -6,10 +6,10 @@
     <title>פאזל הזזה</title>
     <style>
         :root {
-            --primary: #FF6B6B; /* צבע אדמדם-קורל מזמין */
+            --primary: #FF6B6B;
             --primary-hover: #ff5252;
             --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            --board-frame: #2c3e50; /* צבע מסגרת וחור הלוח */
+            --board-frame: #2c3e50;
             --text-color: #333;
         }
 
@@ -33,12 +33,12 @@
             color: var(--text-color);
         }
 
-        /* --- תפריט עליון וגלריה --- */
+        /* --- Header & Gallery --- */
         header {
             width: 100%;
             padding: 15px 10px;
-            background: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
             z-index: 10;
             display: flex;
             flex-direction: column;
@@ -76,7 +76,7 @@
             box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
         }
 
-        /* --- כפתורים ופקדים --- */
+        /* --- Controls --- */
         .controls {
             display: flex;
             justify-content: center;
@@ -101,8 +101,6 @@
             gap: 5px;
         }
 
-        select { padding-right: 5px; } /* התאמה לטקסט עברי */
-
         button:active, .file-btn:active, select:active {
             transform: scale(0.95);
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
@@ -111,14 +109,13 @@
         button.primary {
             background-color: var(--primary);
             color: white;
+            font-size: 16px;
         }
 
-        .file-btn {
-            background: #eef2f5;
-        }
+        .file-btn { background: #eef2f5; }
         input[type="file"] { display: none; }
 
-        /* --- סטטיסטיקה --- */
+        /* --- Stats --- */
         .stats {
             display: flex;
             justify-content: center;
@@ -126,13 +123,14 @@
             font-weight: bold;
             color: #555;
             font-size: 1rem;
-            background: rgba(255,255,255,0.5);
-            padding: 5px 20px;
+            background: rgba(255,255,255,0.6);
+            padding: 6px 20px;
             border-radius: 20px;
             align-self: center;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
         }
 
-        /* --- אזור המשחק --- */
+        /* --- Game Board --- */
         #game-area {
             flex: 1;
             display: flex;
@@ -146,7 +144,7 @@
         #board {
             position: relative;
             background: var(--board-frame);
-            border: 6px solid var(--board-frame); /* יצירת מסגרת */
+            border: 6px solid var(--board-frame);
             border-radius: 12px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.2), inset 0 0 20px rgba(0,0,0,0.5);
             width: 90vw;
@@ -164,44 +162,39 @@
             color: white;
             text-shadow: 0px 2px 4px rgba(0,0,0,0.8);
             border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 6px; /* פינות מעוגלות לחלקים */
+            border-radius: 6px;
             cursor: pointer;
             transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
             box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
         }
 
-        /* מרווח קטן בין החלקים ליצירת מראה ריאליסטי */
-        .tile-inner {
-            width: calc(100% - 2px);
-            height: calc(100% - 2px);
-            position: absolute;
-            top: 1px; left: 1px;
-        }
-
         .tile span { display: none; z-index: 2; }
         .show-numbers .tile span { display: block; }
 
-        /* חלונות צפים (הודעת ניצחון ותצוגה מקדימה) */
+        /* --- Modals (Win & Preview) --- */
         .overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.7);
             display: none;
             justify-content: center;
             align-items: center;
             z-index: 100;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(6px);
         }
 
         .modal {
             background: white;
-            padding: 30px;
+            padding: 25px;
             border-radius: 20px;
             text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            width: 85%;
-            max-width: 350px;
-            animation: popIn 0.3s ease-out;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+            width: 90%;
+            max-width: 360px;
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         @keyframes popIn {
@@ -209,8 +202,28 @@
             100% { transform: scale(1); opacity: 1; }
         }
 
-        .modal h2 { color: var(--primary); margin-top: 0; font-size: 2rem; }
-        .modal p { font-size: 1.2rem; color: #555; }
+        .modal h2 { 
+            color: var(--primary); 
+            margin: 0 0 5px 0; 
+            font-size: 2.2rem; 
+        }
+        
+        .modal p { 
+            font-size: 1.1rem; 
+            color: #666; 
+            margin: 0 0 15px 0;
+        }
+
+        /* תמונת הניצחון */
+        #win-image {
+            width: 100%;
+            max-height: 220px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 3px solid #eee;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
         
         #preview-img {
             max-width: 90%;
@@ -255,9 +268,12 @@
 
 <div id="win-modal" class="overlay">
     <div class="modal">
-        <h2>🎉 אלופה!</h2>
-        <p>פתרת את הפאזל ב-<b id="final-moves"></b> צעדים.</p>
-        <button class="primary" style="width: 100%; margin-top: 15px;" onclick="closeWinModal()">משחק חדש</button>
+        <h2>🎉 הצלחת!</h2>
+        <p>פתרת ב-<b id="final-moves"></b> צעדים.</p>
+        
+        <img id="win-image" src="" alt="תמונה פתורה">
+        
+        <button class="primary" style="width: 100%; padding: 12px;" onclick="playRandomNewGame()">משחק חדש</button>
     </div>
 </div>
 
@@ -266,8 +282,6 @@
 </div>
 
 <script>
-    // --- הגדרות ---
-    // כאן התמונות שלך!
     const defaultImages = [
         '1.jpeg',
         '2.jpeg',
@@ -275,7 +289,7 @@
     ];
 
     let currentImg = defaultImages[0];
-    let rows = 3, cols = 3; // ברירת מחדל 3x3
+    let rows = 3, cols = 3;
     let tiles = [];
     let empty = { r: 2, c: 2 };
     let moves = 0;
@@ -286,7 +300,6 @@
     const board = document.getElementById('board');
     const diffSel = document.getElementById('difficulty');
     
-    // --- אתחול ---
     window.onload = () => {
         buildGallery();
         initGame();
@@ -294,7 +307,6 @@
 
     diffSel.onchange = initGame;
 
-    // --- לוגיקה ---
     function initGame() {
         moves = 0;
         time = 0;
@@ -310,7 +322,7 @@
         else { rows = parseInt(val); cols = parseInt(val); }
 
         createBoard();
-        setTimeout(shuffle, 150); // השהייה קטנה לטעינת ה-UI
+        setTimeout(shuffle, 150);
     }
 
     function createBoard() {
@@ -366,7 +378,6 @@
 
     function tryMove(r, c) {
         if(!isPlaying) return;
-        
         const dist = Math.abs(empty.r - r) + Math.abs(empty.c - c);
         if(dist === 1) {
             swap(r, c);
@@ -378,7 +389,6 @@
 
     function swap(r, c) {
         const t = tiles[r][c];
-        // השתמשנו ב-transform כדי לקבל אנימציה חלקה בהרבה במובייל (Hardware Acceleration)
         t.style.left = (empty.c * (100/cols)) + '%';
         t.style.top = (empty.r * (100/rows)) + '%';
         
@@ -393,7 +403,6 @@
 
     function shuffle() {
         let last = {r:-1, c:-1};
-        // 100 מהלכים אחורה מבטיח שהפאזל פתיר וגם מעורבב היטב
         for(let i=0; i<100; i++) {
             const neighbors = [];
             if(empty.r > 0) neighbors.push({r:empty.r-1, c:empty.c});
@@ -426,13 +435,31 @@
         isPlaying = false;
         clearInterval(timerInt);
         document.getElementById('final-moves').innerText = moves;
+        
+        // עדכון תמונת הניצחון להיות התמונה הנוכחית ששוחקה
+        document.getElementById('win-image').src = currentImg;
+        
         setTimeout(() => {
             document.getElementById('win-modal').style.display = 'flex';
-        }, 300); // השהייה קטנה כדי לתת לחלק האחרון להחליק למקום
+        }, 400); // השהייה קטנה ונעימה לפני שהחלון קופץ
     }
 
-    function closeWinModal() {
+    // פונקציה חדשה: התחלת משחק עם תמונה רנדומלית
+    function playRandomNewGame() {
         document.getElementById('win-modal').style.display = 'none';
+        
+        if (defaultImages.length > 1) {
+            let nextImg;
+            // בחירת תמונה שונה מהתמונה הנוכחית
+            do {
+                const randomIndex = Math.floor(Math.random() * defaultImages.length);
+                nextImg = defaultImages[randomIndex];
+            } while (nextImg === currentImg);
+            
+            currentImg = nextImg;
+            updateGallerySelection(); // סנכרון התפריט העליון
+        }
+        
         initGame();
     }
 
@@ -443,22 +470,32 @@
         document.getElementById('timer').innerText = `${m}:${s}`;
     }
 
-    // --- גלריה והעלאה ---
     function buildGallery() {
         const gal = document.getElementById('gallery');
         gal.innerHTML = '';
         defaultImages.forEach((src, i) => {
             const img = document.createElement('img');
             img.src = src;
-            img.className = 'gallery-item' + (i===0 ? ' active' : '');
+            img.className = 'gallery-item';
+            if (src === currentImg) img.classList.add('active');
             
-            // טיפול במקרה שתמונה לא נטענת (למשל שגיאת כתיב בשם הקובץ בגיטהאב)
-            img.onerror = () => {
-                img.src = 'https://via.placeholder.com/65x65.png?text=Error';
-            };
-
+            img.onerror = () => { img.src = 'https://via.placeholder.com/65x65.png?text=Error'; };
             img.onclick = () => selectImage(src, img);
             gal.appendChild(img);
+        });
+    }
+
+    function updateGallerySelection() {
+        const items = document.querySelectorAll('.gallery-item');
+        items.forEach(img => {
+            // השוואת מקור התמונה הנוכחית כדי להדליק אותה בגלריה
+            if (img.getAttribute('src') === currentImg) {
+                img.classList.add('active');
+                // גלילה אוטומטית של הגלריה כדי שהתמונה תהיה גלויה (UX טוב)
+                img.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            } else {
+                img.classList.remove('active');
+            }
         });
     }
 
