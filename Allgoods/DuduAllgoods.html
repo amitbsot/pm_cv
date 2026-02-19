@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מבצעי החודש</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            direction: rtl;
+        }
+        /* Navigation bar */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f5f5f5;
+            padding: 10px;
+        }
+        nav img {
+            height: 50px;
+            width: 50px;
+        }
+        nav ul {
+            list-style-type: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+        nav ul li {
+            margin-left: 15px;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: #333;
+            font-size: 18px;
+        }
+        /* Slider */
+        .slider {
+            width: 100%;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .slider img {
+            width: 100%;
+            height: auto;
+            display: inline-block;
+        }
+        .slider-container {
+            display: flex;
+            animation: scroll 20s linear infinite;
+        }
+        @keyframes scroll {
+            0% {transform: translateX(0);}
+            100% {transform: translateX(-100%);}
+        }
+        /* Categories */
+        h1 {
+            font-size: 24px;
+            margin-right: 20px;
+        }
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            padding: 10px;
+        }
+        .category {
+            text-align: center;
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .category img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain; /* Ensures image scaling */
+            display: block;
+            margin: 0 auto 10px;
+        }
+        /* Placeholder for missing images */
+        .category img[alt="placeholder"] {
+            content: url('placeholder-image.png'); /* Use a default placeholder image */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <div>
+            <img src="https://amitbsot.github.io/pm_cv/Allgoods/%D7%93%D7%95%D7%93%D7%95%20%D7%94%D7%9B%D7%9C%20%D7%9C%D7%91%D7%99%D7%AA.png" alt="לוגו דודו הכל לבית">
+        </div>
+        <ul>
+            <li><a href="#">תפריט</a></li>
+            <li><a href="#">שירות</a></li>
+            <li><a href="#">חיפוש</a></li>
+            <li><a href="#">מבצעים</a></li>
+            <li><a href="#">עגלה</a></li>
+        </ul>
+    </nav>
+
+    <!-- Monthly Deals Title -->
+    <h1>מבצעי החודש</h1>
+
+    <!-- Image Slider -->
+    <div class="slider">
+        <div class="slider-container">
+            <img src="image1.jpg" alt="מבצע 1" onerror="this.src='placeholder-image.png';">
+            <img src="image2.jpg" alt="מבצע 2" onerror="this.src='placeholder-image.png';">
+            <img src="image3.jpg" alt="מבצע 3" onerror="this.src='placeholder-image.png';">
+            <img src="image4.jpg" alt="מבצע 4" onerror="this.src='placeholder-image.png';">
+            <img src="image5.jpg" alt="מבצע 5" onerror="this.src='placeholder-image.png';">
+            <img src="image6.jpg" alt="מבצע 6" onerror="this.src='placeholder-image.png';">
+            <img src="image7.jpg" alt="מבצע 7" onerror="this.src='placeholder-image.png';">
+            <img src="image8.jpg" alt="מבצע 8" onerror="this.src='placeholder-image.png';">
+            <img src="image9.jpg" alt="מבצע 9" onerror="this.src='placeholder-image.png';">
+            <img src="image10.jpg" alt="מבצע 10" onerror="this.src='placeholder-image.png';">
+        </div>
+    </div>
+
+    <!-- Categories Title -->
+    <h1>כל הקטגוריות</h1>
+
+    <!-- Categories Section -->
+    <div class="categories">
+        <div class="category">
+            <img src="tv.png" alt="כלי מטבח" onerror="this.src='placeholder-image.png';">
+            <p>כלי מטבח</p>
+        </div>
+        <div class="category">
+            <img src="mixer.png" alt="מוצרי חשמל" onerror="this.src='placeholder-image.png';">
+            <p>מוצרי חשמל</p>
+        </div>
+        <div class="category">
+            <img src="laptop.png" alt="עיצוב הבית" onerror="this.src='placeholder-image.png';">
+            <p>עיצוב הבית</p>
+        </div>
+        <div class="category">
+            <img src="gaming.png" alt="לגינה" onerror="this.src='placeholder-image.png';">
+            <p>לגינה</p>
+        </div>
+        <div class="category">
+            <img src="perfume.png" alt="טמבוריה" onerror="this.src='placeholder-image.png';">
+            <p>טמבוריה</p>
+        </div>
+        <div class="category">
+            <img src="speaker.png" alt="מנעולים ומפתחות" onerror="this.src='placeholder-image.png';">
+            <p>מנעולים ומפתחות</p>
+        </div>
+        <div class="category">
+            <img src="home.png" alt="לבית" onerror="this.src='placeholder-image.png';">
+            <p>לבית</p>
+        </div>
+        <div class="category">
+            <img src="watch.png" alt="רק אצל דודו" onerror="this.src='placeholder-image.png';">
+            <p>רק אצל דודו</p>
+        </div>
+        <!-- Add more categories as needed -->
+    </div>
+
+</body>
+</html>

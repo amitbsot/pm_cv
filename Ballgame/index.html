@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>פאזל הזזה</title>
+    <style>
+        :root {
+            --primary: #FF6B6B;
+            --primary-hover: #ff5252;
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --board-frame: #2c3e50;
+            --text-color: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg-gradient);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+            color: var(--text-color);
+        }
+
+        /* --- Header & Gallery --- */
+        header {
+            width: 100%;
+            padding: 15px 10px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+
+        .gallery-scroller {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 5px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .gallery-scroller::-webkit-scrollbar { display: none; }
+
+        .gallery-item {
+            width: 65px;
+            height: 65px;
+            border-radius: 12px;
+            object-fit: cover;
+            opacity: 0.5;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            flex-shrink: 0;
+            border: 3px solid transparent;
+        }
+        
+        .gallery-item.active {
+            opacity: 1;
+            border-color: var(--primary);
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        /* --- Controls --- */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        select, button, .file-btn {
+            padding: 10px 15px;
+            border-radius: 12px;
+            border: none;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        button:active, .file-btn:active, select:active {
+            transform: scale(0.95);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        button.primary {
+            background-color: var(--primary);
+            color: white;
+            font-size: 16px;
+        }
+
+        .file-btn { background: #eef2f5; }
+        input[type="file"] { display: none; }
+
+        /* --- Stats --- */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            font-weight: bold;
+            color: #555;
+            font-size: 1rem;
+            background: rgba(255,255,255,0.6);
+            padding: 6px 20px;
+            border-radius: 20px;
+            align-self: center;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* --- Game Board --- */
+        #game-area {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            position: relative;
+            padding: 20px;
+        }
+
+        #board {
+            position: relative;
+            background: var(--board-frame);
+            border: 6px solid var(--board-frame);
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2), inset 0 0 20px rgba(0,0,0,0.5);
+            width: 90vw;
+            max-width: 420px;
+        }
+
+        .tile {
+            position: absolute;
+            background-size: 100% 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            font-weight: 900;
+            color: white;
+            text-shadow: 0px 2px 4px rgba(0,0,0,0.8);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        .tile span { display: none; z-index: 2; }
+        .show-numbers .tile span { display: block; }
+
+        /* --- Modals (Win & Preview) --- */
+        .overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            backdrop-filter: blur(6px);
+        }
+
+        .modal {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+            width: 90%;
+            max-width: 360px;
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal h2 { 
+            color: var(--primary); 
+            margin: 0 0 5px 0; 
+            font-size: 2.2rem; 
+        }
+        
+        .modal p { 
+            font-size: 1.1rem; 
+            color: #666; 
+            margin: 0 0 15px 0;
+        }
+
+        /* תמונת הניצחון */
+        #win-image {
+            width: 100%;
+            max-height: 220px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 3px solid #eee;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        
+        #preview-img {
+            max-width: 90%;
+            max-height: 80%;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            animation: popIn 0.3s ease-out;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="gallery-scroller" id="gallery"></div>
+
+    <div class="controls">
+        <select id="difficulty">
+            <option value="3" selected>3x3 (קל)</option>
+            <option value="4">4x4 (רגיל)</option>
+            <option value="4-5">4x5 (קשה)</option>
+        </select>
+
+        <label class="file-btn">
+            📷 תמונה שלי
+            <input type="file" id="upload" accept="image/*">
+        </label>
+
+        <button onclick="document.getElementById('board').classList.toggle('show-numbers')">123</button>
+        <button onclick="document.getElementById('preview-modal').style.display='flex'">👁️</button>
+        <button class="primary" onclick="initGame()">🔄 ערבב</button>
+    </div>
+
+    <div class="stats">
+        <span>⏱️ <span id="timer">00:00</span></span>
+        <span>👣 <span id="moves">0</span></span>
+    </div>
+</header>
+
+<div id="game-area">
+    <div id="board"></div>
+</div>
+
+<div id="win-modal" class="overlay">
+    <div class="modal">
+        <h2>🎉 הצלחת!</h2>
+        <p>פתרת ב-<b id="final-moves"></b> צעדים.</p>
+        
+        <img id="win-image" src="" alt="תמונה פתורה">
+        
+        <button class="primary" style="width: 100%; padding: 12px;" onclick="playRandomNewGame()">משחק חדש</button>
+    </div>
+</div>
+
+<div id="preview-modal" class="overlay" onclick="this.style.display='none'">
+    <img id="preview-img" src="">
+</div>
+
+<script>
+    // תוקנו הגרשיים המסולסלים לגרשיים ישרים תקינים
+    const defaultImages = [
+        '1.jpeg',
+        '2.jpeg',
+        'IMG_5196.jpeg',
+        'IMG_6919.jpeg',
+        'IMG_6890.jpeg',
+        'IMG_6924.jpeg',
+        'IMG_7041.jpeg',
+        'IMG_7160.jpeg'
+    ];
+
+    let currentImg = defaultImages[0];
+    let rows = 3, cols = 3;
+    let tiles = [];
+    let empty = { r: 2, c: 2 };
+    let moves = 0;
+    let time = 0;
+    let timerInt;
+    let isPlaying = true;
+
+    const board = document.getElementById('board');
+    const diffSel = document.getElementById('difficulty');
+    
+    window.onload = () => {
+        buildGallery();
+        initGame();
+    };
+
+    diffSel.onchange = initGame;
+
+    function initGame() {
+        moves = 0;
+        time = 0;
+        isPlaying = true;
+        document.getElementById('moves').innerText = '0';
+        document.getElementById('timer').innerText = '00:00';
+        document.getElementById('win-modal').style.display = 'none';
+        clearInterval(timerInt);
+        timerInt = setInterval(updateTime, 1000);
+
+        const val = diffSel.value;
+        if (val === '4-5') { rows = 5; cols = 4; }
+        else { rows = parseInt(val); cols = parseInt(val); }
+
+        createBoard();
+        setTimeout(shuffle, 150);
+    }
+
+    function createBoard() {
+        board.innerHTML = '';
+        tiles = [];
+        
+        const w = board.clientWidth;
+        const h = w * (rows / cols);
+        board.style.height = h + 'px';
+        
+        const tileW = 100 / cols;
+        const tileH = 100 / rows;
+
+        for(let r=0; r<rows; r++) {
+            tiles[r] = [];
+            for(let c=0; c<cols; c++) {
+                if(r===rows-1 && c===cols-1) {
+                    empty = {r, c};
+                    tiles[r][c] = null;
+                    continue;
+                }
+                
+                const t = document.createElement('div');
+                t.className = 'tile';
+                t.style.width = tileW + '%';
+                t.style.height = tileH + '%';
+                t.style.left = (c * tileW) + '%';
+                t.style.top = (r * tileH) + '%';
+                t.style.backgroundImage = `url('${currentImg}')`;
+                
+                t.style.backgroundSize = `${cols*100}% ${rows*100}%`;
+                t.style.backgroundPosition = `${(c/(cols-1))*100}% ${(r/(rows-1))*100}%`;
+                
+                const num = r*cols + c + 1;
+                t.innerHTML = `<span>${num}</span>`;
+                t.dataset.r = r;
+                t.dataset.c = c;
+                t.dataset.val = num;
+
+                const moveHandler = (e) => {
+                    if(e.type === 'touchend') e.preventDefault();
+                    tryMove(parseInt(t.dataset.r), parseInt(t.dataset.c));
+                };
+                t.addEventListener('click', moveHandler);
+                t.addEventListener('touchend', moveHandler);
+
+                tiles[r][c] = t;
+                board.appendChild(t);
+            }
+        }
+        document.getElementById('preview-img').src = currentImg;
+    }
+
+    function tryMove(r, c) {
+        if(!isPlaying) return;
+        const dist = Math.abs(empty.r - r) + Math.abs(empty.c - c);
+        if(dist === 1) {
+            swap(r, c);
+            moves++;
+            document.getElementById('moves').innerText = moves;
+            checkWin();
+        }
+    }
+
+    function swap(r, c) {
+        const t = tiles[r][c];
+        t.style.left = (empty.c * (100/cols)) + '%';
+        t.style.top = (empty.r * (100/rows)) + '%';
+        
+        t.dataset.r = empty.r;
+        t.dataset.c = empty.c;
+        
+        tiles[empty.r][empty.c] = t;
+        tiles[r][c] = null;
+        
+        empty = {r, c};
+    }
+
+    function shuffle() {
+        let last = {r:-1, c:-1};
+        for(let i=0; i<100; i++) {
+            const neighbors = [];
+            if(empty.r > 0) neighbors.push({r:empty.r-1, c:empty.c});
+            if(empty.r < rows-1) neighbors.push({r:empty.r+1, c:empty.c});
+            if(empty.c > 0) neighbors.push({r:empty.r, c:empty.c-1});
+            if(empty.c < cols-1) neighbors.push({r:empty.r, c:empty.c+1});
+
+            const valid = neighbors.filter(n => !(n.r === last.r && n.c === last.c));
+            const choice = valid[Math.floor(Math.random() * valid.length)] || neighbors[0];
+
+            swap(choice.r, choice.c);
+            last = {r: empty.r, c: empty.c};
+        }
+        moves = 0;
+        document.getElementById('moves').innerText = '0';
+    }
+
+    function checkWin() {
+        let count = 1;
+        for(let r=0; r<rows; r++) {
+            for(let c=0; c<cols; c++) {
+                if(r===rows-1 && c===cols-1) return win();
+                if(!tiles[r][c]) return;
+                if(parseInt(tiles[r][c].dataset.val) !== count++) return;
+            }
+        }
+    }
+
+    function win() {
+        isPlaying = false;
+        clearInterval(timerInt);
+        document.getElementById('final-moves').innerText = moves;
+        
+        // עדכון תמונת הניצחון להיות התמונה הנוכחית ששוחקה
+        document.getElementById('win-image').src = currentImg;
+        
+        setTimeout(() => {
+            document.getElementById('win-modal').style.display = 'flex';
+        }, 400); // השהייה קטנה ונעימה לפני שהחלון קופץ
+    }
+
+    // פונקציה חדשה: התחלת משחק עם תמונה רנדומלית
+    function playRandomNewGame() {
+        document.getElementById('win-modal').style.display = 'none';
+        
+        if (defaultImages.length > 1) {
+            let nextImg;
+            // בחירת תמונה שונה מהתמונה הנוכחית
+            do {
+                const randomIndex = Math.floor(Math.random() * defaultImages.length);
+                nextImg = defaultImages[randomIndex];
+            } while (nextImg === currentImg);
+            
+            currentImg = nextImg;
+            updateGallerySelection(); // סנכרון התפריט העליון
+        }
+        
+        initGame();
+    }
+
+    function updateTime() {
+        time++;
+        const m = Math.floor(time/60).toString().padStart(2,'0');
+        const s = (time%60).toString().padStart(2,'0');
+        document.getElementById('timer').innerText = `${m}:${s}`;
+    }
+
+    function buildGallery() {
+        const gal = document.getElementById('gallery');
+        gal.innerHTML = '';
+        defaultImages.forEach((src, i) => {
+            const img = document.createElement('img');
+            img.src = src;
+            img.className = 'gallery-item';
+            if (src === currentImg) img.classList.add('active');
+            
+            img.onerror = () => { img.src = 'https://via.placeholder.com/65x65.png?text=Error'; };
+            img.onclick = () => selectImage(src, img);
+            gal.appendChild(img);
+        });
+    }
+
+    function updateGallerySelection() {
+        const items = document.querySelectorAll('.gallery-item');
+        items.forEach(img => {
+            // השוואת מקור התמונה הנוכחית כדי להדליק אותה בגלריה
+            if (img.getAttribute('src') === currentImg) {
+                img.classList.add('active');
+                // גלילה אוטומטית של הגלריה כדי שהתמונה תהיה גלויה (UX טוב)
+                img.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            } else {
+                img.classList.remove('active');
+            }
+        });
+    }
+
+    function selectImage(src, el) {
+        document.querySelectorAll('.gallery-item').forEach(x => x.classList.remove('active'));
+        el.classList.add('active');
+        currentImg = src;
+        initGame();
+    }
+
+    document.getElementById('upload').onchange = function(e) {
+        const file = e.target.files[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            const src = ev.target.result;
+            const img = document.createElement('img');
+            img.src = src;
+            img.className = 'gallery-item active';
+            img.onclick = () => selectImage(src, img);
+            
+            const gal = document.getElementById('gallery');
+            document.querySelectorAll('.gallery-item').forEach(x => x.classList.remove('active'));
+            gal.insertBefore(img, gal.firstChild);
+            
+            currentImg = src;
+            initGame();
+        };
+        reader.readAsDataURL(file);
+    };
+</script>
+
+</body>
+</html>

@@ -6,7 +6,7 @@
 
 
 body {
-overflow-y: hidden;
+overflow: hidden;
 background-image: url('TOD BG option 1.jpg'); 
 background-size: 100%; /* Set the background image size */
 background-repeat: no-repeat;
@@ -61,8 +61,8 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
-  position: fixed;
-  bottom: 33%;
+  position: relative;
+  bottom: 25%;
   height: 52px;
   width: 104px;
 }
@@ -85,4 +85,3 @@ button {
   background-color: purple;
   font-size: x-large;
 }
-
