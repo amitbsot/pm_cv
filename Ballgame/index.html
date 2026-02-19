@@ -6,10 +6,11 @@
     <title>פאזל הזזה</title>
     <style>
         :root {
-            --primary-color: #4a90e2;
-            --bg-color: #f0f2f5;
-            --board-bg: #e0e0e0;
-            --tile-border: 1px solid rgba(255,255,255,0.5);
+            --primary: #FF6B6B; /* צבע אדמדם-קורל מזמין */
+            --primary-hover: #ff5252;
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --board-frame: #2c3e50; /* צבע מסגרת וחור הלוח */
+            --text-color: #333;
         }
 
         * {
@@ -17,98 +18,121 @@
             user-select: none;
             -webkit-user-select: none;
             touch-action: manipulation;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: var(--bg-color);
+            background: var(--bg-gradient);
             height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             overflow: hidden;
+            color: var(--text-color);
         }
 
-        /* --- Header & Gallery --- */
+        /* --- תפריט עליון וגלריה --- */
         header {
             width: 100%;
-            padding: 10px;
-            background: white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 15px 10px;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             z-index: 10;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 15px;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
         }
 
         .gallery-scroller {
             display: flex;
-            gap: 8px;
+            gap: 12px;
             overflow-x: auto;
-            padding: 4px;
+            padding: 5px;
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
         }
         .gallery-scroller::-webkit-scrollbar { display: none; }
 
         .gallery-item {
-            width: 60px;
-            height: 60px;
-            border-radius: 8px;
+            width: 65px;
+            height: 65px;
+            border-radius: 12px;
             object-fit: cover;
             opacity: 0.5;
-            border: 2px solid transparent;
-            transition: all 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             flex-shrink: 0;
+            border: 3px solid transparent;
         }
+        
         .gallery-item.active {
             opacity: 1;
-            border-color: var(--primary-color);
-            transform: scale(1.05);
+            border-color: var(--primary);
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
         }
 
+        /* --- כפתורים ופקדים --- */
         .controls {
             display: flex;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
             flex-wrap: wrap;
         }
 
         select, button, .file-btn {
-            padding: 8px 12px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            background: white;
-            font-size: 14px;
+            padding: 10px 15px;
+            border-radius: 12px;
+            border: none;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-color);
             cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        select { padding-right: 5px; } /* התאמה לטקסט עברי */
+
+        button:active, .file-btn:active, select:active {
+            transform: scale(0.95);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
         button.primary {
-            background-color: var(--primary-color);
+            background-color: var(--primary);
             color: white;
-            border: none;
-            font-weight: bold;
         }
 
         .file-btn {
-            background: #eee;
-            display: inline-block;
+            background: #eef2f5;
         }
         input[type="file"] { display: none; }
 
+        /* --- סטטיסטיקה --- */
         .stats {
             display: flex;
-            justify-content: space-around;
-            width: 100%;
+            justify-content: center;
+            gap: 30px;
             font-weight: bold;
             color: #555;
-            font-size: 0.9rem;
-            margin-top: 5px;
+            font-size: 1rem;
+            background: rgba(255,255,255,0.5);
+            padding: 5px 20px;
+            border-radius: 20px;
+            align-self: center;
         }
 
-        /* --- Game Board --- */
+        /* --- אזור המשחק --- */
         #game-area {
             flex: 1;
             display: flex;
@@ -116,17 +140,17 @@
             align-items: center;
             width: 100%;
             position: relative;
+            padding: 20px;
         }
 
         #board {
             position: relative;
-            background: var(--board-bg);
-            border: 4px solid #333;
-            border-radius: 8px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            background: var(--board-frame);
+            border: 6px solid var(--board-frame); /* יצירת מסגרת */
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2), inset 0 0 20px rgba(0,0,0,0.5);
             width: 90vw;
-            max-width: 400px;
-            /* Height is set dynamically in JS */
+            max-width: 420px;
         }
 
         .tile {
@@ -135,48 +159,65 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 24px;
-            font-weight: bold;
+            font-size: 28px;
+            font-weight: 900;
             color: white;
-            text-shadow: 0 0 5px black;
-            border: var(--tile-border);
+            text-shadow: 0px 2px 4px rgba(0,0,0,0.8);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 6px; /* פינות מעוגלות לחלקים */
             cursor: pointer;
-            transition: transform 0.2s ease-in-out;
+            transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
         }
 
-        .tile span { display: none; }
+        /* מרווח קטן בין החלקים ליצירת מראה ריאליסטי */
+        .tile-inner {
+            width: calc(100% - 2px);
+            height: calc(100% - 2px);
+            position: absolute;
+            top: 1px; left: 1px;
+        }
+
+        .tile span { display: none; z-index: 2; }
         .show-numbers .tile span { display: block; }
 
-        /* --- Overlays --- */
-        #win-msg {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(255,255,255,0.95);
-            padding: 25px;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-            display: none;
-            z-index: 20;
-            width: 80%;
-        }
-        #win-msg h2 { color: #2ecc71; margin-top: 0; }
-
-        #preview-modal {
+        /* חלונות צפים (הודעת ניצחון ותצוגה מקדימה) */
+        .overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
+            background: rgba(0,0,0,0.8);
             display: none;
             justify-content: center;
             align-items: center;
             z-index: 100;
+            backdrop-filter: blur(5px);
         }
+
+        .modal {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            width: 85%;
+            max-width: 350px;
+            animation: popIn 0.3s ease-out;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal h2 { color: var(--primary); margin-top: 0; font-size: 2rem; }
+        .modal p { font-size: 1.2rem; color: #555; }
+        
         #preview-img {
             max-width: 90%;
             max-height: 80%;
-            border: 4px solid white;
-            border-radius: 4px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            animation: popIn 0.3s ease-out;
         }
     </style>
 </head>
@@ -187,19 +228,19 @@
 
     <div class="controls">
         <select id="difficulty">
-            <option value="3">3x3 (קל)</option>
-            <option value="4" selected>4x4 (רגיל)</option>
+            <option value="3" selected>3x3 (קל)</option>
+            <option value="4">4x4 (רגיל)</option>
             <option value="4-5">4x5 (קשה)</option>
         </select>
 
         <label class="file-btn">
-            📷 העלה
+            📷 תמונה שלי
             <input type="file" id="upload" accept="image/*">
         </label>
 
-        <button onclick="document.getElementById('board').classList.toggle('show-numbers')">#</button>
+        <button onclick="document.getElementById('board').classList.toggle('show-numbers')">123</button>
         <button onclick="document.getElementById('preview-modal').style.display='flex'">👁️</button>
-        <button class="primary" onclick="initGame()">🔄</button>
+        <button class="primary" onclick="initGame()">🔄 ערבב</button>
     </div>
 
     <div class="stats">
@@ -210,32 +251,33 @@
 
 <div id="game-area">
     <div id="board"></div>
-    
-    <div id="win-msg">
-        <h2>🎉 כל הכבוד!</h2>
-        <p>סיימת ב-<b id="final-moves"></b> צעדים</p>
-        <button class="primary" onclick="initGame()">משחק חדש</button>
+</div>
+
+<div id="win-modal" class="overlay">
+    <div class="modal">
+        <h2>🎉 אלופה!</h2>
+        <p>פתרת את הפאזל ב-<b id="final-moves"></b> צעדים.</p>
+        <button class="primary" style="width: 100%; margin-top: 15px;" onclick="closeWinModal()">משחק חדש</button>
     </div>
 </div>
 
-<div id="preview-modal" onclick="this.style.display='none'">
+<div id="preview-modal" class="overlay" onclick="this.style.display='none'">
     <img id="preview-img" src="">
 </div>
 
 <script>
     // --- הגדרות ---
+    // כאן התמונות שלך!
     const defaultImages = [
-        '1.jpeg', // משפחה
-        '2.jpeg', // תונוני
-        '3.jpeg', // פאג
-        '4.jpeg', // מדוזה
-        '5.jpeg', // ניבתן
+        '1.jpeg',
+        '2.jpeg',
+        '3.jpeg'
     ];
 
     let currentImg = defaultImages[0];
-    let rows = 4, cols = 4;
+    let rows = 3, cols = 3; // ברירת מחדל 3x3
     let tiles = [];
-    let empty = { r: 3, c: 3 };
+    let empty = { r: 2, c: 2 };
     let moves = 0;
     let time = 0;
     let timerInt;
@@ -254,33 +296,27 @@
 
     // --- לוגיקה ---
     function initGame() {
-        // איפוס
         moves = 0;
         time = 0;
         isPlaying = true;
         document.getElementById('moves').innerText = '0';
         document.getElementById('timer').innerText = '00:00';
-        document.getElementById('win-msg').style.display = 'none';
+        document.getElementById('win-modal').style.display = 'none';
         clearInterval(timerInt);
         timerInt = setInterval(updateTime, 1000);
 
-        // קביעת גודל
         const val = diffSel.value;
         if (val === '4-5') { rows = 5; cols = 4; }
         else { rows = parseInt(val); cols = parseInt(val); }
 
-        // בניית לוח
         createBoard();
-        
-        // ערבוב קצר
-        setTimeout(shuffle, 100);
+        setTimeout(shuffle, 150); // השהייה קטנה לטעינת ה-UI
     }
 
     function createBoard() {
         board.innerHTML = '';
         tiles = [];
         
-        // חישוב גודל
         const w = board.clientWidth;
         const h = w * (rows / cols);
         board.style.height = h + 'px';
@@ -303,9 +339,8 @@
                 t.style.height = tileH + '%';
                 t.style.left = (c * tileW) + '%';
                 t.style.top = (r * tileH) + '%';
-                t.style.backgroundImage = `url(${currentImg})`;
+                t.style.backgroundImage = `url('${currentImg}')`;
                 
-                // חישוב מיקום רקע כדי ליצור תמונה שלמה
                 t.style.backgroundSize = `${cols*100}% ${rows*100}%`;
                 t.style.backgroundPosition = `${(c/(cols-1))*100}% ${(r/(rows-1))*100}%`;
                 
@@ -315,7 +350,6 @@
                 t.dataset.c = c;
                 t.dataset.val = num;
 
-                // אירועים
                 const moveHandler = (e) => {
                     if(e.type === 'touchend') e.preventDefault();
                     tryMove(parseInt(t.dataset.r), parseInt(t.dataset.c));
@@ -333,7 +367,6 @@
     function tryMove(r, c) {
         if(!isPlaying) return;
         
-        // בדיקת מרחק 1 (למעלה/למטה/שמאלה/ימינה)
         const dist = Math.abs(empty.r - r) + Math.abs(empty.c - c);
         if(dist === 1) {
             swap(r, c);
@@ -345,37 +378,34 @@
 
     function swap(r, c) {
         const t = tiles[r][c];
-        // הזזה ויזואלית
+        // השתמשנו ב-transform כדי לקבל אנימציה חלקה בהרבה במובייל (Hardware Acceleration)
         t.style.left = (empty.c * (100/cols)) + '%';
         t.style.top = (empty.r * (100/rows)) + '%';
         
-        // עדכון נתונים
         t.dataset.r = empty.r;
         t.dataset.c = empty.c;
         
         tiles[empty.r][empty.c] = t;
         tiles[r][c] = null;
         
-        empty = {r, c}; // הריק זז למקום הישן של החלק
+        empty = {r, c};
     }
 
     function shuffle() {
-        // ערבוב על ידי ביצוע מהלכים חוקיים (כדי להבטיח פתירות)
         let last = {r:-1, c:-1};
-        for(let i=0; i<150; i++) {
-            // מציאת שכנים
+        // 100 מהלכים אחורה מבטיח שהפאזל פתיר וגם מעורבב היטב
+        for(let i=0; i<100; i++) {
             const neighbors = [];
             if(empty.r > 0) neighbors.push({r:empty.r-1, c:empty.c});
             if(empty.r < rows-1) neighbors.push({r:empty.r+1, c:empty.c});
             if(empty.c > 0) neighbors.push({r:empty.r, c:empty.c-1});
             if(empty.c < cols-1) neighbors.push({r:empty.r, c:empty.c+1});
 
-            // סינון חזרה למקום הקודם
             const valid = neighbors.filter(n => !(n.r === last.r && n.c === last.c));
             const choice = valid[Math.floor(Math.random() * valid.length)] || neighbors[0];
 
             swap(choice.r, choice.c);
-            last = {r: empty.r, c: empty.c}; // שומרים את מיקום הריק *לפני* ההחלפה הבאה
+            last = {r: empty.r, c: empty.c};
         }
         moves = 0;
         document.getElementById('moves').innerText = '0';
@@ -386,7 +416,7 @@
         for(let r=0; r<rows; r++) {
             for(let c=0; c<cols; c++) {
                 if(r===rows-1 && c===cols-1) return win();
-                if(!tiles[r][c]) return; // חור במקום הלא נכון
+                if(!tiles[r][c]) return;
                 if(parseInt(tiles[r][c].dataset.val) !== count++) return;
             }
         }
@@ -396,7 +426,14 @@
         isPlaying = false;
         clearInterval(timerInt);
         document.getElementById('final-moves').innerText = moves;
-        document.getElementById('win-msg').style.display = 'block';
+        setTimeout(() => {
+            document.getElementById('win-modal').style.display = 'flex';
+        }, 300); // השהייה קטנה כדי לתת לחלק האחרון להחליק למקום
+    }
+
+    function closeWinModal() {
+        document.getElementById('win-modal').style.display = 'none';
+        initGame();
     }
 
     function updateTime() {
@@ -414,6 +451,12 @@
             const img = document.createElement('img');
             img.src = src;
             img.className = 'gallery-item' + (i===0 ? ' active' : '');
+            
+            // טיפול במקרה שתמונה לא נטענת (למשל שגיאת כתיב בשם הקובץ בגיטהאב)
+            img.onerror = () => {
+                img.src = 'https://via.placeholder.com/65x65.png?text=Error';
+            };
+
             img.onclick = () => selectImage(src, img);
             gal.appendChild(img);
         });
@@ -432,7 +475,6 @@
         const reader = new FileReader();
         reader.onload = function(ev) {
             const src = ev.target.result;
-            // הוספה לגלריה
             const img = document.createElement('img');
             img.src = src;
             img.className = 'gallery-item active';
