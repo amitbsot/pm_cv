@@ -3,14 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7832188543711021" crossorigin="anonymous"></script>
     <title>פאזל הזזה</title>
     <style>
         :root {
-            --primary: #FF6B6B;
-            --primary-hover: #ff5252;
-            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            --board-frame: #2c3e50;
-            --text-color: #333;
+            /* עיצוב ידידותי למשפחה - צבעים רכים ושמחים */
+            --primary: #FF9F43; /* כתום שמח */
+            --primary-shadow: #E67E22;
+            --bg-gradient: linear-gradient(135deg, #E0F7FA 0%, #B2EBF2 100%); /* תכלת שמיים עדין */
+            --board-frame: #FFF9C4; /* צהוב פסטלי למסגרת */
+            --text-color: #5D4037; /* חום רך במקום שחור נוקשה */
+            --btn-radius: 25px;
         }
 
         * {
@@ -18,7 +21,7 @@
             user-select: none;
             -webkit-user-select: none;
             touch-action: manipulation;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
@@ -37,14 +40,15 @@
         header {
             width: 100%;
             padding: 15px 10px;
-            background: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             z-index: 10;
             display: flex;
             flex-direction: column;
             gap: 15px;
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
         }
 
         .gallery-scroller {
@@ -60,11 +64,11 @@
         .gallery-item {
             width: 65px;
             height: 65px;
-            border-radius: 12px;
+            border-radius: 18px; /* יותר עגול וידידותי */
             object-fit: cover;
-            opacity: 0.5;
+            opacity: 0.6;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transition: all 0.3s bounce;
             flex-shrink: 0;
             border: 3px solid transparent;
         }
@@ -72,29 +76,29 @@
         .gallery-item.active {
             opacity: 1;
             border-color: var(--primary);
-            transform: scale(1.1);
-            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+            transform: scale(1.1) translateY(-2px);
+            box-shadow: 0 8px 15px rgba(255, 159, 67, 0.3);
         }
 
-        /* --- Controls --- */
+        /* --- Controls & Buttons (Bubbly Style) --- */
         .controls {
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
             flex-wrap: wrap;
         }
 
         select, button, .file-btn {
-            padding: 10px 15px;
-            border-radius: 12px;
+            padding: 10px 18px;
+            border-radius: var(--btn-radius);
             border: none;
             background: #fff;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 0px #D7CCC8;
             font-size: 15px;
-            font-weight: 600;
+            font-weight: bold;
             color: var(--text-color);
             cursor: pointer;
-            transition: transform 0.1s, box-shadow 0.1s;
+            transition: all 0.1s;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -102,18 +106,32 @@
         }
 
         button:active, .file-btn:active, select:active {
-            transform: scale(0.95);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transform: translateY(4px);
+            box-shadow: 0 0px 0px transparent;
         }
 
         button.primary {
             background-color: var(--primary);
             color: white;
+            box-shadow: 0 4px 0px var(--primary-shadow);
             font-size: 16px;
+        }
+        button.primary:active {
+            box-shadow: 0 0px 0px transparent;
         }
 
         .file-btn { background: #eef2f5; }
         input[type="file"] { display: none; }
+
+        /* Feature Icons with lock status */
+        .feature-btn { position: relative; }
+        .locked-badge {
+            position: absolute;
+            top: -5px; right: -5px;
+            background: #FF5252; color: white;
+            font-size: 10px; padding: 2px 5px;
+            border-radius: 10px; font-weight: bold;
+        }
 
         /* --- Stats --- */
         .stats {
@@ -121,11 +139,11 @@
             justify-content: center;
             gap: 30px;
             font-weight: bold;
-            color: #555;
-            font-size: 1rem;
-            background: rgba(255,255,255,0.6);
-            padding: 6px 20px;
-            border-radius: 20px;
+            color: #795548;
+            font-size: 1.1rem;
+            background: rgba(255,255,255,0.7);
+            padding: 8px 25px;
+            border-radius: 25px;
             align-self: center;
             box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
         }
@@ -144,9 +162,9 @@
         #board {
             position: relative;
             background: var(--board-frame);
-            border: 6px solid var(--board-frame);
-            border-radius: 12px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2), inset 0 0 20px rgba(0,0,0,0.5);
+            border: 8px solid var(--board-frame);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1), inset 0 0 15px rgba(0,0,0,0.1);
             width: 90vw;
             max-width: 420px;
         }
@@ -157,81 +175,96 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 900;
             color: white;
-            text-shadow: 0px 2px 4px rgba(0,0,0,0.8);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 6px;
+            text-shadow: 2px 2px 0 #FF9F43, -1px -1px 0 #FF9F43, 1px -1px 0 #FF9F43, -1px 1px 0 #FF9F43; /* סגנון כתב מצויר */
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 12px;
             cursor: pointer;
-            transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
         .tile span { display: none; z-index: 2; }
         .show-numbers .tile span { display: block; }
 
-        /* --- Modals (Win & Preview) --- */
+        /* --- Modals --- */
         .overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7);
+            background: rgba(255,255,255,0.6);
             display: none;
             justify-content: center;
             align-items: center;
             z-index: 100;
-            backdrop-filter: blur(6px);
+            backdrop-filter: blur(8px);
         }
-
+        
         .modal {
             background: white;
-            padding: 25px;
-            border-radius: 20px;
+            padding: 30px 25px;
+            border-radius: 30px;
             text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
             width: 90%;
             max-width: 360px;
-            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
             display: flex;
             flex-direction: column;
             align-items: center;
+            border: 4px solid #FFF9C4;
         }
 
         @keyframes popIn {
-            0% { transform: scale(0.8); opacity: 0; }
+            0% { transform: scale(0.5); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
         }
 
         .modal h2 { 
             color: var(--primary); 
-            margin: 0 0 5px 0; 
+            margin: 0 0 10px 0; 
             font-size: 2.2rem; 
         }
         
         .modal p { 
             font-size: 1.1rem; 
-            color: #666; 
-            margin: 0 0 15px 0;
+            color: #795548; 
+            margin: 0 0 20px 0;
+            line-height: 1.4;
         }
 
-        /* תמונת הניצחון */
         #win-image {
             width: 100%;
             max-height: 220px;
             object-fit: cover;
-            border-radius: 12px;
+            border-radius: 16px;
             margin-bottom: 20px;
-            border: 3px solid #eee;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            border: 4px solid var(--board-frame);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
         }
         
         #preview-img {
             max-width: 90%;
             max-height: 80%;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            animation: popIn 0.3s ease-out;
+            border-radius: 20px;
+            border: 6px solid white;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            animation: popIn 0.4s ease-out;
         }
+
+        /* Ad loading simulation */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 15px auto;
+            display: none;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -243,7 +276,7 @@
         <select id="difficulty">
             <option value="3" selected>3x3 (קל)</option>
             <option value="4">4x4 (רגיל)</option>
-            <option value="4-5">4x5 (קשה)</option>
+            <option value="4-5">4x5 (אתגר)</option>
         </select>
 
         <label class="file-btn">
@@ -251,8 +284,12 @@
             <input type="file" id="upload" accept="image/*">
         </label>
 
-        <button onclick="document.getElementById('board').classList.toggle('show-numbers')">123</button>
-        <button onclick="document.getElementById('preview-modal').style.display='flex'">👁️</button>
+        <button class="feature-btn" onclick="requestFeature('numbers')">
+            123 <span class="locked-badge" id="badge-numbers">🔒</span>
+        </button>
+        <button class="feature-btn" onclick="requestFeature('preview')">
+            👁️ הצצה <span class="locked-badge" id="badge-preview">🔒</span>
+        </button>
         <button class="primary" onclick="initGame()">🔄 ערבב</button>
     </div>
 
@@ -268,12 +305,22 @@
 
 <div id="win-modal" class="overlay">
     <div class="modal">
-        <h2>🎉 הצלחת!</h2>
-        <p>פתרת ב-<b id="final-moves"></b> צעדים.</p>
-        
+        <h2>🎉 כל הכבוד!</h2>
+        <p>פתרת את הפאזל ב-<b id="final-moves"></b> צעדים.</p>
         <img id="win-image" src="" alt="תמונה פתורה">
-        
-        <button class="primary" style="width: 100%; padding: 12px;" onclick="playRandomNewGame()">משחק חדש</button>
+        <button class="primary" style="width: 100%; padding: 14px;" onclick="playRandomNewGame()">משחק חדש 🎈</button>
+    </div>
+</div>
+
+<div id="ad-modal" class="overlay">
+    <div class="modal">
+        <h2>🎁 עזרה בדרך!</h2>
+        <p id="ad-text">צפה בפרסומת קצרה כדי לפתוח את העזרה הזו לסיבוב הנוכחי!</p>
+        <div class="loader" id="ad-loader"></div>
+        <div style="display:flex; gap:10px; width:100%;" id="ad-buttons">
+            <button class="primary" style="flex:1;" onclick="showRewardedAd()">צפה עכשיו 🎬</button>
+            <button style="flex:1;" onclick="closeAdModal()">לא תודה</button>
+        </div>
     </div>
 </div>
 
@@ -282,12 +329,8 @@
 </div>
 
 <script>
-    // תוקנו הגרשיים המסולסלים לגרשיים ישרים תקינים
-    const defaultImages = [
-        'IMG_7777.jpeg',
-    ];
-
-    let currentImg = defaultImages[0];
+    const defaultImages = ['IMG_7777.jpeg'];
+    let currentImg = defaultImages[0] || 'https://via.placeholder.com/400x400/FFCC80/5D4037?text=Puzzle';
     let rows = 3, cols = 3;
     let tiles = [];
     let empty = { r: 2, c: 2 };
@@ -295,6 +338,68 @@
     let time = 0;
     let timerInt;
     let isPlaying = true;
+
+    // --- Rewarded Ads Logic ---
+    let unlockedFeatures = { numbers: false, preview: false };
+    let currentFeatureRequest = null;
+
+    function resetFeatures() {
+        unlockedFeatures = { numbers: false, preview: false };
+        document.getElementById('badge-numbers').style.display = 'block';
+        document.getElementById('badge-preview').style.display = 'block';
+        document.getElementById('board').classList.remove('show-numbers');
+    }
+
+    function requestFeature(featureType) {
+        if (unlockedFeatures[featureType]) {
+            executeFeature(featureType);
+        } else {
+            currentFeatureRequest = featureType;
+            let featureName = featureType === 'numbers' ? 'מספרי העזר' : 'הצצת התמונה';
+            document.getElementById('ad-text').innerText = `צפה בפרסומת קצרה כדי לפתוח את ${featureName} עד סוף הסיבוב!`;
+            document.getElementById('ad-modal').style.display = 'flex';
+        }
+    }
+
+    function closeAdModal() {
+        document.getElementById('ad-modal').style.display = 'none';
+        currentFeatureRequest = null;
+    }
+
+    function showRewardedAd() {
+        // --- כאן תכנס הקריאה האמיתית ל-AdSense H5 / AdMob שלך ---
+        // לשם הדגמה וידידותיות משתמש, יצרתי סימולציה של טעינת פרסומת ב-3 שניות
+        
+        document.getElementById('ad-buttons').style.display = 'none';
+        document.getElementById('ad-loader').style.display = 'block';
+        document.getElementById('ad-text').innerText = "טוען פרסומת... (סימולציה)";
+
+        setTimeout(() => {
+            // הפרסומת הסתיימה בהצלחה
+            rewardUser();
+        }, 2000);
+    }
+
+    function rewardUser() {
+        document.getElementById('ad-buttons').style.display = 'flex';
+        document.getElementById('ad-loader').style.display = 'none';
+        closeAdModal();
+
+        if (currentFeatureRequest) {
+            unlockedFeatures[currentFeatureRequest] = true;
+            document.getElementById(`badge-${currentFeatureRequest}`).style.display = 'none';
+            executeFeature(currentFeatureRequest);
+        }
+    }
+
+    function executeFeature(featureType) {
+        if (featureType === 'numbers') {
+            document.getElementById('board').classList.toggle('show-numbers');
+        } else if (featureType === 'preview') {
+            document.getElementById('preview-modal').style.display = 'flex';
+        }
+    }
+    // --- End Rewarded Ads Logic ---
 
     const board = document.getElementById('board');
     const diffSel = document.getElementById('difficulty');
@@ -315,6 +420,8 @@
         document.getElementById('win-modal').style.display = 'none';
         clearInterval(timerInt);
         timerInt = setInterval(updateTime, 1000);
+
+        resetFeatures(); // נועל את העזרים בכל משחק חדש
 
         const val = diffSel.value;
         if (val === '4-5') { rows = 5; cols = 4; }
@@ -365,8 +472,8 @@
                     if(e.type === 'touchend') e.preventDefault();
                     tryMove(parseInt(t.dataset.r), parseInt(t.dataset.c));
                 };
-                t.addEventListener('click', moveHandler);
-                t.addEventListener('touchend', moveHandler);
+                t.addEventListener('mousedown', moveHandler);
+                t.addEventListener('touchstart', moveHandler);
 
                 tiles[r][c] = t;
                 board.appendChild(t);
@@ -402,7 +509,7 @@
 
     function shuffle() {
         let last = {r:-1, c:-1};
-        for(let i=0; i<100; i++) {
+        for(let i=0; i<150; i++) {
             const neighbors = [];
             if(empty.r > 0) neighbors.push({r:empty.r-1, c:empty.c});
             if(empty.r < rows-1) neighbors.push({r:empty.r+1, c:empty.c});
@@ -434,31 +541,23 @@
         isPlaying = false;
         clearInterval(timerInt);
         document.getElementById('final-moves').innerText = moves;
-        
-        // עדכון תמונת הניצחון להיות התמונה הנוכחית ששוחקה
         document.getElementById('win-image').src = currentImg;
-        
         setTimeout(() => {
             document.getElementById('win-modal').style.display = 'flex';
-        }, 400); // השהייה קטנה ונעימה לפני שהחלון קופץ
+        }, 300);
     }
 
-    // פונקציה חדשה: התחלת משחק עם תמונה רנדומלית
     function playRandomNewGame() {
         document.getElementById('win-modal').style.display = 'none';
-        
         if (defaultImages.length > 1) {
             let nextImg;
-            // בחירת תמונה שונה מהתמונה הנוכחית
             do {
                 const randomIndex = Math.floor(Math.random() * defaultImages.length);
                 nextImg = defaultImages[randomIndex];
             } while (nextImg === currentImg);
-            
             currentImg = nextImg;
-            updateGallerySelection(); // סנכרון התפריט העליון
+            updateGallerySelection();
         }
-        
         initGame();
     }
 
@@ -472,13 +571,13 @@
     function buildGallery() {
         const gal = document.getElementById('gallery');
         gal.innerHTML = '';
-        defaultImages.forEach((src, i) => {
+        if(defaultImages.length === 0) return;
+        defaultImages.forEach((src) => {
             const img = document.createElement('img');
             img.src = src;
             img.className = 'gallery-item';
             if (src === currentImg) img.classList.add('active');
-            
-            img.onerror = () => { img.src = 'https://via.placeholder.com/65x65.png?text=Error'; };
+            img.onerror = () => { img.src = 'https://via.placeholder.com/65x65/FFCC80/5D4037?text=Error'; };
             img.onclick = () => selectImage(src, img);
             gal.appendChild(img);
         });
@@ -487,10 +586,8 @@
     function updateGallerySelection() {
         const items = document.querySelectorAll('.gallery-item');
         items.forEach(img => {
-            // השוואת מקור התמונה הנוכחית כדי להדליק אותה בגלריה
             if (img.getAttribute('src') === currentImg) {
                 img.classList.add('active');
-                // גלילה אוטומטית של הגלריה כדי שהתמונה תהיה גלויה (UX טוב)
                 img.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
             } else {
                 img.classList.remove('active');
